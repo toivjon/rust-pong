@@ -1,0 +1,2 @@
+# The default Rust build directory.
+/target
