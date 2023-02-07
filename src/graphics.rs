@@ -64,7 +64,7 @@ impl Graphics {
     /// during the first draw or when the render target should be re-created.
     fn create_target(&mut self) -> Result<()> {
         unsafe {
-            let render_target = self.factory.CreateHwndRenderTarget(
+            let target = self.factory.CreateHwndRenderTarget(
                 &D2D1_RENDER_TARGET_PROPERTIES::default(),
                 &D2D1_HWND_RENDER_TARGET_PROPERTIES {
                     hwnd: self.hwnd,
@@ -72,7 +72,7 @@ impl Graphics {
                     ..Default::default()
                 },
             )?;
-            let brush = render_target.CreateSolidColorBrush(
+            let brush = target.CreateSolidColorBrush(
                 &D2D1_COLOR_F {
                     r: 1.0,
                     g: 1.0,
@@ -81,7 +81,7 @@ impl Graphics {
                 },
                 None,
             )?;
-            self.target = Some(render_target);
+            self.target = Some(target);
             self.brush = Some(brush);
         }
         Ok(())
