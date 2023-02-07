@@ -1,10 +1,14 @@
+use graphics::Graphics;
 use windows::s;
 use windows::Win32::Foundation::*;
 use windows::Win32::System::LibraryLoader::GetModuleHandleA;
 use windows::Win32::UI::WindowsAndMessaging::*;
 
+mod graphics;
+
 fn main() {
-    let _window = unsafe { create_window() };
+    let window = unsafe { create_window() };
+    let mut graphics = Graphics::new(window).unwrap();
     let mut msg = MSG::default();
     loop {
         while unsafe { PeekMessageA(&mut msg, HWND(0), 0, 0, PM_REMOVE).into() } {
@@ -13,6 +17,7 @@ fn main() {
             }
             unsafe { DispatchMessageA(&msg) };
         }
+        graphics.draw();
     }
 }
 
