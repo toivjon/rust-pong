@@ -10,17 +10,11 @@ mod graphics;
 fn main() -> Result<()> {
     let window = unsafe { create_window() };
     let graphics = Graphics::new(window).unwrap();
-    let mut application = Application {
+    let mut app = Application {
         hwnd: window,
         graphics,
     };
-    unsafe {
-        SetWindowLongPtrA(
-            application.hwnd,
-            GWLP_USERDATA,
-            &mut application as *mut _ as _,
-        )
-    };
+    unsafe { SetWindowLongPtrA(app.hwnd, GWLP_USERDATA, &mut app as *mut _ as _) };
     let mut msg = MSG::default();
     'main_loop: loop {
         while unsafe { PeekMessageA(&mut msg, HWND(0), 0, 0, PM_REMOVE).into() } {
@@ -29,7 +23,7 @@ fn main() -> Result<()> {
             }
             unsafe { DispatchMessageA(&msg) };
         }
-        application.graphics.draw()?;
+        app.graphics.draw()?;
     }
     Ok(())
 }
