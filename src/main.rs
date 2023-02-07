@@ -68,7 +68,7 @@ unsafe fn create_window() -> HWND {
     )
 }
 
-// A message router for the incoming operating system messages for the application.
+/// A message router for the incoming operating system messages for the application.
 unsafe extern "system" fn wndproc(hwnd: HWND, msg: u32, wparam: WPARAM, lparam: LPARAM) -> LRESULT {
     let app = GetWindowLongPtrA(hwnd, GWLP_USERDATA) as *mut Application;
     if !app.is_null() {
