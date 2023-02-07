@@ -52,10 +52,11 @@ impl Graphics {
     }
 
     /// Resize the graphics by changing the size of the render target.
-    pub fn resize(&self, width: u32, height: u32) -> Result<()> {
+    pub fn resize(&self) -> Result<()> {
         if self.target.is_some() {
             let ctx = self.target.as_ref().unwrap();
-            unsafe { ctx.Resize(&D2D_SIZE_U { width, height })? }
+            let size = hwnd_size(unsafe { ctx.GetHwnd() });
+            unsafe { ctx.Resize(&size)? }
         }
         Ok(())
     }
