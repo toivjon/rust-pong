@@ -84,8 +84,8 @@ struct Application {
 
 impl Application {
     /// A handler for the incoming operating system messages for the application.
-    unsafe fn message_handler(&mut self, message: u32, wparam: WPARAM, lparam: LPARAM) -> LRESULT {
-        match message {
+    unsafe fn message_handler(&mut self, msg: u32, wparam: WPARAM, lparam: LPARAM) -> LRESULT {
+        match msg {
             WM_DESTROY => {
                 PostQuitMessage(0);
                 LRESULT(0)
@@ -94,7 +94,7 @@ impl Application {
                 self.graphics.resize().unwrap();
                 LRESULT(0)
             }
-            _ => DefWindowProcA(self.hwnd, message, wparam, lparam),
+            _ => DefWindowProcA(self.hwnd, msg, wparam, lparam),
         }
     }
 }
