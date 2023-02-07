@@ -1,4 +1,5 @@
 use graphics::Graphics;
+use windows::core::Result;
 use windows::s;
 use windows::Win32::Foundation::*;
 use windows::Win32::System::LibraryLoader::GetModuleHandleA;
@@ -6,19 +7,20 @@ use windows::Win32::UI::WindowsAndMessaging::*;
 
 mod graphics;
 
-fn main() {
+fn main() -> Result<()> {
     let window = unsafe { create_window() };
     let mut graphics = Graphics::new(window).unwrap();
     let mut msg = MSG::default();
-    loop {
+    'main_loop: loop {
         while unsafe { PeekMessageA(&mut msg, HWND(0), 0, 0, PM_REMOVE).into() } {
             if msg.message == WM_QUIT {
-                return;
+                break 'main_loop;
             }
             unsafe { DispatchMessageA(&msg) };
         }
-        graphics.draw();
+        graphics.draw()?;
     }
+    Ok(())
 }
 
 unsafe fn create_window() -> HWND {
