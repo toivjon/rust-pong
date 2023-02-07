@@ -8,7 +8,7 @@ use windows::Win32::UI::WindowsAndMessaging::GetClientRect;
 pub struct Graphics {
     hwnd: HWND,
     factory: ID2D1Factory1,
-    ctx: Option<ID2D1HwndRenderTarget>,
+    target: Option<ID2D1HwndRenderTarget>,
     brush: Option<ID2D1SolidColorBrush>,
 }
 
@@ -18,17 +18,17 @@ impl Graphics {
         Ok(Graphics {
             hwnd,
             factory,
-            ctx: None,
+            target: None,
             brush: None,
         })
     }
 
     pub fn draw(&mut self) -> Result<()> {
-        if self.ctx.is_none() {
+        if self.target.is_none() {
             self.create_target()?;
         }
 
-        let ctx = self.ctx.as_ref().unwrap();
+        let ctx = self.target.as_ref().unwrap();
         let brush = self.brush.as_ref().unwrap();
 
         unsafe {
@@ -53,8 +53,8 @@ impl Graphics {
 
     /// Resize the graphics by changing the size of the render target.
     pub fn resize(&self, width: u32, height: u32) -> Result<()> {
-        if self.ctx.is_some() {
-            let ctx = self.ctx.as_ref().unwrap();
+        if self.target.is_some() {
+            let ctx = self.target.as_ref().unwrap();
             unsafe { ctx.Resize(&D2D_SIZE_U { width, height })? }
         }
         Ok(())
@@ -81,7 +81,7 @@ impl Graphics {
                 },
                 None,
             )?;
-            self.ctx = Some(render_target);
+            self.target = Some(render_target);
             self.brush = Some(brush);
         }
         Ok(())
@@ -90,7 +90,7 @@ impl Graphics {
     /// Release rendering target and related items. These will be automatically
     /// re-created during the next time the draw function is being called.
     fn release_target(&mut self) {
-        self.ctx = None;
+        self.target = None;
         self.brush = None;
     }
 }
