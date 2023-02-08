@@ -1,3 +1,4 @@
+use game::{Entity, create_entities};
 use graphics::Graphics;
 use windows::core::Result;
 use windows::s;
@@ -5,6 +6,7 @@ use windows::Win32::Foundation::*;
 use windows::Win32::System::LibraryLoader::GetModuleHandleA;
 use windows::Win32::UI::WindowsAndMessaging::*;
 
+mod game;
 mod graphics;
 
 fn main() -> Result<()> {
@@ -14,6 +16,7 @@ fn main() -> Result<()> {
         hwnd: window,
         graphics,
     };
+    let entities = create_entities();
     unsafe { SetWindowLongPtrA(app.hwnd, GWLP_USERDATA, &mut app as *mut _ as _) };
     let mut msg = MSG::default();
     'main_loop: loop {
@@ -23,7 +26,7 @@ fn main() -> Result<()> {
             }
             unsafe { DispatchMessageA(&msg) };
         }
-        app.graphics.draw()?;
+        app.graphics.draw(&entities)?;
     }
     Ok(())
 }

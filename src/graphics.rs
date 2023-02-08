@@ -5,6 +5,8 @@ use windows::Win32::Graphics::Direct2D::Common::*;
 use windows::Win32::Graphics::Direct2D::*;
 use windows::Win32::UI::WindowsAndMessaging::GetClientRect;
 
+use crate::game::Entity;
+
 /// A constant for the view aspect ratio.
 const ASPECT: f32 = 1.3;
 
@@ -28,30 +30,19 @@ impl Graphics {
         })
     }
 
-    pub fn draw(&mut self) -> Result<()> {
+    pub fn draw(&mut self, entitites: &[Entity]) -> Result<()> {
         if self.target.is_none() {
             self.create_target()?;
         }
-
         let ctx = self.target.as_ref().unwrap();
-        let brush = self.brush.as_ref().unwrap();
-
         unsafe {
             ctx.BeginDraw();
             ctx.Clear(Some(&D2D1_COLOR_F::default()));
-
-            // TODO iterate over the specified drawables...
-            let transform = Matrix3x2::translation(0.0, 0.0);
-            ctx.SetTransform(&(transform * self.transform));
-            ctx.FillRectangle(
-                &D2D_RECT_F {
-                    right: 0.025,
-                    bottom: 0.0325,
-                    ..Default::default()
-                },
-                brush,
-            );
-
+            entitites.iter().for_each(|entity| {
+                let transform = Matrix3x2::translation(entity.pos.X, entity.pos.Y);
+                ctx.SetTransform(&(transform * self.transform));
+                entity.geo.draw(self);
+            });
             if let Err(error) = ctx.EndDraw(None, None) {
                 if error.code() == D2DERR_RECREATE_TARGET {
                     self.release_target();
@@ -153,4 +144,28 @@ fn create_aspect_transform(hwnd: HWND) -> Matrix3x2 {
         ..Default::default()
     };
     scale * translation
+}
+
+pub trait Geometry {
+    fn draw(&self, graphics: &Graphics);
+}
+
+pub struct Rectangle {
+    pub w: f32,
+    pub h: f32,
+}
+
+impl Geometry for Rectangle {
+    fn draw(&self, graphics: &Graphics) {
+        unsafe {
+            graphics.target.as_ref().unwrap().FillRectangle(
+                &D2D_RECT_F {
+                    right: self.w,
+                    bottom: self.h,
+                    ..Default::default()
+                },
+                graphics.brush.as_ref().unwrap(),
+            )
+        }
+    }
 }
