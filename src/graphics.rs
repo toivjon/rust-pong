@@ -1,10 +1,12 @@
 use std::collections::HashMap;
 
 use windows::core::Result;
+use windows::w;
 use windows::Foundation::Numerics::{Matrix3x2, Vector2};
 use windows::Win32::Foundation::{D2DERR_RECREATE_TARGET, HWND};
 use windows::Win32::Graphics::Direct2D::Common::*;
 use windows::Win32::Graphics::Direct2D::*;
+use windows::Win32::Graphics::DirectWrite::*;
 use windows::Win32::UI::WindowsAndMessaging::GetClientRect;
 
 use crate::game::Entity;
@@ -19,6 +21,7 @@ pub struct Graphics {
     target: Option<ID2D1HwndRenderTarget>,
     brush: Option<ID2D1SolidColorBrush>,
     transform: Matrix3x2,
+    text_format: IDWriteTextFormat,
 }
 
 impl Graphics {
@@ -29,6 +32,7 @@ impl Graphics {
             target: None,
             brush: None,
             transform: create_aspect_transform(hwnd),
+            text_format: create_text_format(),
         })
     }
 
@@ -148,6 +152,34 @@ fn create_aspect_transform(hwnd: HWND) -> Matrix3x2 {
     scale * translation
 }
 
+/// Create the text format used to draw texts on the buffer.
+fn create_text_format() -> IDWriteTextFormat {
+    unsafe {
+        let factory: IDWriteFactory3 = DWriteCreateFactory(DWRITE_FACTORY_TYPE_SHARED).unwrap();
+        let text_format = factory
+            .CreateTextFormat(
+                w!("Arial"),
+                None,
+                DWRITE_FONT_WEIGHT_NORMAL,
+                DWRITE_FONT_STYLE_NORMAL,
+                DWRITE_FONT_STRETCH_NORMAL,
+                0.2,
+                w!("en-us"),
+            )
+            .unwrap();
+        text_format
+            .SetTextAlignment(DWRITE_TEXT_ALIGNMENT_CENTER)
+            .unwrap();
+        text_format
+            .SetParagraphAlignment(DWRITE_PARAGRAPH_ALIGNMENT_CENTER)
+            .unwrap();
+        text_format
+            .SetWordWrapping(DWRITE_WORD_WRAPPING_NO_WRAP)
+            .unwrap();
+        text_format
+    }
+}
+
 pub trait Geometry {
     fn draw(&self, graphics: &Graphics);
 }
@@ -167,6 +199,27 @@ impl Geometry for Rectangle {
                     ..Default::default()
                 },
                 graphics.brush.as_ref().unwrap(),
+            )
+        }
+    }
+}
+
+pub struct Text {
+    pub text: Vec<u16>,
+}
+
+impl Geometry for Text {
+    fn draw(&self, graphics: &Graphics) {
+        let ctx = graphics.target.as_ref().unwrap();
+        let brush = graphics.brush.as_ref().unwrap();
+        unsafe {
+            ctx.DrawText(
+                &self.text,
+                &graphics.text_format,
+                &D2D_RECT_F::default(),
+                brush,
+                D2D1_DRAW_TEXT_OPTIONS_NONE,
+                DWRITE_MEASURING_MODE_NATURAL,
             )
         }
     }

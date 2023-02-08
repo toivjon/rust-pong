@@ -1,8 +1,8 @@
 use std::collections::HashMap;
 
-use windows::Foundation::Numerics::Vector2;
+use windows::{w, Foundation::Numerics::Vector2};
 
-use crate::graphics::{Geometry, Rectangle};
+use crate::graphics::{Geometry, Rectangle, Text};
 
 pub struct Game {
     pub entities: HashMap<String, Entity>,
@@ -57,6 +57,24 @@ impl Game {
                             Y: 1.0 - 0.03,
                         },
                         geo: Box::new(Rectangle { w: 1.0, h: 0.03 }),
+                    },
+                ),
+                (
+                    String::from("left-score"),
+                    Entity {
+                        pos: Vector2 { X: 0.35, Y: 0.15 },
+                        geo: Box::new(Text {
+                            text: unsafe { w!("0").as_wide().to_vec() },
+                        }),
+                    },
+                ),
+                (
+                    String::from("right-score"),
+                    Entity {
+                        pos: Vector2 { X: 0.65, Y: 0.15 },
+                        geo: Box::new(Text {
+                            text: unsafe { w!("0").as_wide().to_vec() },
+                        }),
                     },
                 ),
             ]),
