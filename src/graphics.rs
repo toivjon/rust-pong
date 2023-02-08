@@ -55,7 +55,7 @@ impl Graphics {
     pub fn resize(&self) -> Result<()> {
         if self.target.is_some() {
             let ctx = self.target.as_ref().unwrap();
-            let size = hwnd_size(unsafe { ctx.GetHwnd() });
+            let size = get_window_size(unsafe { ctx.GetHwnd() });
             unsafe { ctx.Resize(&size)? }
         }
         Ok(())
@@ -69,7 +69,7 @@ impl Graphics {
                 &D2D1_RENDER_TARGET_PROPERTIES::default(),
                 &D2D1_HWND_RENDER_TARGET_PROPERTIES {
                     hwnd: self.hwnd,
-                    pixelSize: hwnd_size(self.hwnd),
+                    pixelSize: get_window_size(self.hwnd),
                     ..Default::default()
                 },
             )?;
@@ -106,7 +106,7 @@ fn create_factory() -> Result<ID2D1Factory1> {
 }
 
 /// Get the client rect size of the provided window handle.
-fn hwnd_size(hwnd: HWND) -> D2D_SIZE_U {
+fn get_window_size(hwnd: HWND) -> D2D_SIZE_U {
     let mut rect = windows::Win32::Foundation::RECT::default();
     unsafe { GetClientRect(hwnd, &mut rect) };
     D2D_SIZE_U {
