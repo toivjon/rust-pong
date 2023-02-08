@@ -1,8 +1,12 @@
 use windows::core::Result;
+use windows::Foundation::Numerics::{Matrix3x2, Vector2};
 use windows::Win32::Foundation::{D2DERR_RECREATE_TARGET, HWND};
 use windows::Win32::Graphics::Direct2D::Common::*;
 use windows::Win32::Graphics::Direct2D::*;
 use windows::Win32::UI::WindowsAndMessaging::GetClientRect;
+
+/// A constant for the view aspect ratio.
+const ASPECT: f32 = 1.3;
 
 /// A context object for graphics operations.
 pub struct Graphics {
@@ -10,16 +14,17 @@ pub struct Graphics {
     factory: ID2D1Factory1,
     target: Option<ID2D1HwndRenderTarget>,
     brush: Option<ID2D1SolidColorBrush>,
+    transform: Matrix3x2,
 }
 
 impl Graphics {
     pub fn new(hwnd: HWND) -> Result<Self> {
-        let factory = create_factory()?;
         Ok(Graphics {
             hwnd,
-            factory,
+            factory: create_factory()?,
             target: None,
             brush: None,
+            transform: create_aspect_transform(hwnd),
         })
     }
 
@@ -34,14 +39,19 @@ impl Graphics {
         unsafe {
             ctx.BeginDraw();
             ctx.Clear(Some(&D2D1_COLOR_F::default()));
+
+            // TODO iterate over the specified drawables...
+            let transform = Matrix3x2::translation(0.0, 0.0);
+            ctx.SetTransform(&(transform * self.transform));
             ctx.FillRectangle(
                 &D2D_RECT_F {
-                    right: 100.0,
-                    bottom: 100.0,
+                    right: 0.025,
+                    bottom: 0.0325,
                     ..Default::default()
                 },
                 brush,
             );
+
             if let Err(error) = ctx.EndDraw(None, None) {
                 if error.code() == D2DERR_RECREATE_TARGET {
                     self.release_target();
@@ -52,8 +62,9 @@ impl Graphics {
     }
 
     /// Resize the graphics by changing the size of the render target.
-    pub fn resize(&self) -> Result<()> {
+    pub fn resize(&mut self) -> Result<()> {
         if self.target.is_some() {
+            self.transform = create_aspect_transform(self.hwnd);
             let ctx = self.target.as_ref().unwrap();
             let size = get_window_size(unsafe { ctx.GetHwnd() });
             unsafe { ctx.Resize(&size)? }
@@ -113,4 +124,33 @@ fn get_window_size(hwnd: HWND) -> D2D_SIZE_U {
         width: (rect.right - rect.left) as u32,
         height: (rect.bottom - rect.top) as u32,
     }
+}
+
+/// Get the aspect ratio specific offset for the given window size.
+fn get_aspect_offset(size: &D2D_SIZE_U) -> Vector2 {
+    let mut result = Vector2::default();
+    let x = size.width as f32;
+    let y = size.height as f32;
+    let aspect = x / y;
+    if (aspect - ASPECT).abs() > 0.0 {
+        if aspect > ASPECT {
+            result.X = (x - y * ASPECT) / 2.0;
+        } else {
+            result.Y = (y - x / ASPECT) / 2.0;
+        }
+    }
+    result
+}
+
+/// Create a transform matrix for the given window based on the static aspect ratio.
+fn create_aspect_transform(hwnd: HWND) -> Matrix3x2 {
+    let size = get_window_size(hwnd);
+    let offset = get_aspect_offset(&size);
+    let translation = Matrix3x2::translation(offset.X, offset.Y);
+    let scale = Matrix3x2 {
+        M11: (size.width as f32 - offset.X * 2.0),
+        M22: (size.height as f32 - offset.Y * 2.0),
+        ..Default::default()
+    };
+    scale * translation
 }
