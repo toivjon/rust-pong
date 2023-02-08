@@ -1,3 +1,5 @@
+use std::collections::HashMap;
+
 use windows::core::Result;
 use windows::Foundation::Numerics::{Matrix3x2, Vector2};
 use windows::Win32::Foundation::{D2DERR_RECREATE_TARGET, HWND};
@@ -30,7 +32,7 @@ impl Graphics {
         })
     }
 
-    pub fn draw(&mut self, entitites: &[Entity]) -> Result<()> {
+    pub fn draw(&mut self, entitites: &HashMap<String, Entity>) -> Result<()> {
         if self.target.is_none() {
             self.create_target()?;
         }
@@ -38,7 +40,7 @@ impl Graphics {
         unsafe {
             ctx.BeginDraw();
             ctx.Clear(Some(&D2D1_COLOR_F::default()));
-            entitites.iter().for_each(|entity| {
+            entitites.values().for_each(|entity| {
                 let transform = Matrix3x2::translation(entity.pos.X, entity.pos.Y);
                 ctx.SetTransform(&(transform * self.transform));
                 entity.geo.draw(self);

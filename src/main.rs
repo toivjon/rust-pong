@@ -1,4 +1,4 @@
-use game::{Entity, create_entities};
+use game::*;
 use graphics::Graphics;
 use windows::core::Result;
 use windows::s;
@@ -16,7 +16,7 @@ fn main() -> Result<()> {
         hwnd: window,
         graphics,
     };
-    let entities = create_entities();
+    let game = Game::new();
     unsafe { SetWindowLongPtrA(app.hwnd, GWLP_USERDATA, &mut app as *mut _ as _) };
     let mut msg = MSG::default();
     'main_loop: loop {
@@ -26,7 +26,7 @@ fn main() -> Result<()> {
             }
             unsafe { DispatchMessageA(&msg) };
         }
-        app.graphics.draw(&entities)?;
+        app.graphics.draw(&game.entities)?;
     }
     Ok(())
 }
