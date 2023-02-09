@@ -10,12 +10,9 @@ mod game;
 mod graphics;
 
 fn main() -> Result<()> {
-    let window = unsafe { create_window() };
-    let graphics = Graphics::new(window).unwrap();
-    let mut app = Application {
-        hwnd: window,
-        graphics,
-    };
+    let hwnd = unsafe { create_window() };
+    let graphics = Graphics::new(hwnd).unwrap();
+    let mut app = Application { hwnd, graphics };
     let game = Game::new();
     unsafe { SetWindowLongPtrA(app.hwnd, GWLP_USERDATA, &mut app as *mut _ as _) };
     let mut msg = MSG::default();
