@@ -12,8 +12,12 @@ mod graphics;
 fn main() -> Result<()> {
     let hwnd = unsafe { create_window() };
     let graphics = Graphics::new(hwnd).unwrap();
-    let mut app = Application { hwnd, graphics };
     let game = Game::new();
+    let mut app = Application {
+        hwnd,
+        graphics,
+        game,
+    };
     unsafe { SetWindowLongPtrA(app.hwnd, GWLP_USERDATA, &mut app as *mut _ as _) };
     let mut msg = MSG::default();
     'main_loop: loop {
@@ -23,7 +27,7 @@ fn main() -> Result<()> {
             }
             unsafe { DispatchMessageA(&msg) };
         }
-        app.graphics.draw(&game.entities)?;
+        app.graphics.draw(&app.game.entities)?;
     }
     Ok(())
 }
@@ -74,6 +78,7 @@ unsafe extern "system" fn wndproc(hwnd: HWND, msg: u32, wparam: WPARAM, lparam: 
 struct Application {
     hwnd: HWND,
     graphics: Graphics,
+    game: Game,
 }
 
 impl Application {
