@@ -31,9 +31,8 @@ fn main() -> Result<()> {
                 DispatchMessageA(&msg);
             }
         }
-
-        app.game.tick();
-        app.graphics.draw(&app.game.entities)?;
+        app.tick();
+        app.draw()?;
     }
 }
 
@@ -108,5 +107,13 @@ impl Application {
             }
             _ => DefWindowProcA(self.hwnd, msg, wparam, lparam),
         }
+    }
+
+    fn tick(&mut self) {
+        self.game.tick()
+    }
+
+    fn draw(&mut self) -> Result<()> {
+        self.graphics.draw(&self.game.entities)
     }
 }
