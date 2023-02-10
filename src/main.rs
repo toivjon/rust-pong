@@ -20,17 +20,21 @@ fn main() -> Result<()> {
     };
     unsafe { SetWindowLongPtrA(app.hwnd, GWLP_USERDATA, &mut app as *mut _ as _) };
     let mut msg = MSG::default();
-    'main_loop: loop {
-        while unsafe { PeekMessageA(&mut msg, HWND(0), 0, 0, PM_REMOVE).into() } {
-            if msg.message == WM_QUIT {
-                break 'main_loop;
+    loop {
+        unsafe {
+            // Check and acquire system message from the message queue.
+            while PeekMessageA(&mut msg, HWND(0), 0, 0, PM_REMOVE).into() {
+                if msg.message == WM_QUIT {
+                    return Ok(());
+                }
+                TranslateMessage(&msg);
+                DispatchMessageA(&msg);
             }
-            unsafe { DispatchMessageA(&msg) };
         }
+
         app.game.tick();
         app.graphics.draw(&app.game.entities)?;
     }
-    Ok(())
 }
 
 unsafe fn create_window() -> HWND {
