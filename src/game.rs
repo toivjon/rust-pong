@@ -1,11 +1,21 @@
 use std::collections::HashMap;
 
+use windows::Win32::UI::Input::KeyboardAndMouse::*;
 use windows::{w, Foundation::Numerics::Vector2};
 
 use crate::graphics::{Geometry, Rectangle, Text};
 
+/// A constant for the paddle movement velocity.
+const PADDLE_VELOCITY: f32 = 0.005;
+
 pub struct Game {
     pub entities: HashMap<String, Entity>,
+    left_player: Player,
+    right_player: Player,
+}
+
+struct Player {
+    y_movement: f32,
 }
 
 impl Game {
@@ -78,6 +88,63 @@ impl Game {
                     },
                 ),
             ]),
+            left_player: Player { y_movement: 0.0 },
+            right_player: Player { y_movement: 0.0 },
+        }
+    }
+
+    pub fn tick(&mut self) {
+        // TODO There's gotta be a cleaner way to do this update.
+        self.entities
+            .entry(String::from("right-paddle"))
+            .and_modify(|x| {
+                x.pos.Y += self.right_player.y_movement * PADDLE_VELOCITY;
+            });
+
+        // TODO There's gotta be a cleaner way to do this update.
+        self.entities
+            .entry(String::from("left-paddle"))
+            .and_modify(|x| {
+                x.pos.Y += self.left_player.y_movement * PADDLE_VELOCITY;
+            });
+
+        // TODO apply movement
+        // TODO check collisions
+    }
+
+    pub fn on_key_down(&mut self, key: u16) {
+        match VIRTUAL_KEY(key) {
+            VK_UP => self.right_player.y_movement = -1.0,
+            VK_DOWN => self.right_player.y_movement = 1.0,
+            VK_W => self.left_player.y_movement = -1.0,
+            VK_S => self.left_player.y_movement = 1.0,
+            _ => (),
+        }
+    }
+
+    pub fn on_key_up(&mut self, key: u16) {
+        match VIRTUAL_KEY(key) {
+            VK_UP => {
+                if self.right_player.y_movement < 0.0 {
+                    self.right_player.y_movement = 0.0;
+                }
+            }
+            VK_DOWN => {
+                if self.right_player.y_movement > 0.0 {
+                    self.right_player.y_movement = 0.0;
+                }
+            }
+            VK_W => {
+                if self.left_player.y_movement < 0.0 {
+                    self.left_player.y_movement = 0.0;
+                }
+            }
+            VK_S => {
+                if self.left_player.y_movement > 0.0 {
+                    self.left_player.y_movement = 0.0;
+                }
+            }
+            _ => (),
         }
     }
 }

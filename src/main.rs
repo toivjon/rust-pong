@@ -27,6 +27,7 @@ fn main() -> Result<()> {
             }
             unsafe { DispatchMessageA(&msg) };
         }
+        app.game.tick();
         app.graphics.draw(&app.game.entities)?;
     }
     Ok(())
@@ -91,6 +92,14 @@ impl Application {
             }
             WM_SIZE => {
                 self.graphics.resize().unwrap();
+                LRESULT(0)
+            }
+            WM_KEYDOWN => {
+                self.game.on_key_down(wparam.0 as u16);
+                LRESULT(0)
+            }
+            WM_KEYUP => {
+                self.game.on_key_up(wparam.0 as u16);
                 LRESULT(0)
             }
             _ => DefWindowProcA(self.hwnd, msg, wparam, lparam),
