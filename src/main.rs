@@ -10,15 +10,7 @@ mod game;
 mod graphics;
 
 fn main() -> Result<()> {
-    let hwnd = unsafe { create_window() };
-    let graphics = Graphics::new(hwnd).unwrap();
-    let game = Game::new();
-    let mut app = Application {
-        hwnd,
-        graphics,
-        game,
-    };
-    unsafe { SetWindowLongPtrA(app.hwnd, GWLP_USERDATA, &mut app as *mut _ as _) };
+    let mut app = App::new();
     let mut msg = MSG::default();
     loop {
         unsafe {
@@ -72,20 +64,33 @@ unsafe fn create_window() -> HWND {
 
 /// A message router for the incoming operating system messages for the application.
 unsafe extern "system" fn wndproc(hwnd: HWND, msg: u32, wparam: WPARAM, lparam: LPARAM) -> LRESULT {
-    let app = GetWindowLongPtrA(hwnd, GWLP_USERDATA) as *mut Application;
+    let app = GetWindowLongPtrA(hwnd, GWLP_USERDATA) as *mut App;
     if !app.is_null() {
         return (*app).message_handler(msg, wparam, lparam);
     }
     DefWindowProcA(hwnd, msg, wparam, lparam)
 }
 
-struct Application {
+struct App {
     hwnd: HWND,
     graphics: Graphics,
     game: Game,
 }
 
-impl Application {
+impl App {
+    fn new() -> Self {
+        let hwnd = unsafe { create_window() };
+        let graphics = Graphics::new(hwnd).unwrap();
+        let game = Game::new();
+        let mut app = App {
+            hwnd,
+            graphics,
+            game,
+        };
+        unsafe { SetWindowLongPtrA(app.hwnd, GWLP_USERDATA, &mut app as *mut _ as _) };
+        app
+    }
+
     /// A handler for the incoming operating system messages for the application.
     unsafe fn message_handler(&mut self, msg: u32, wparam: WPARAM, lparam: LPARAM) -> LRESULT {
         match msg {
