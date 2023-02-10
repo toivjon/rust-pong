@@ -1,3 +1,5 @@
+use std::time::Instant;
+
 use game::*;
 use graphics::Graphics;
 use windows::core::Result;
@@ -75,6 +77,7 @@ struct App {
     hwnd: HWND,
     graphics: Graphics,
     game: Game,
+    tick_time: Instant,
 }
 
 impl App {
@@ -86,6 +89,7 @@ impl App {
             hwnd,
             graphics,
             game,
+            tick_time: Instant::now(),
         };
         unsafe { SetWindowLongPtrA(app.hwnd, GWLP_USERDATA, &mut app as *mut _ as _) };
         app
@@ -115,7 +119,11 @@ impl App {
     }
 
     fn tick(&mut self) {
-        self.game.tick()
+        let now = Instant::now();
+        let delta_time = now.duration_since(self.tick_time);
+        self.tick_time = now;
+
+        self.game.tick(delta_time)
     }
 
     fn draw(&mut self) -> Result<()> {

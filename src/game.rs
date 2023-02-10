@@ -1,4 +1,5 @@
 use std::collections::HashMap;
+use std::time::Duration;
 
 use windows::Win32::UI::Input::KeyboardAndMouse::*;
 use windows::{w, Foundation::Numerics::Vector2};
@@ -6,7 +7,7 @@ use windows::{w, Foundation::Numerics::Vector2};
 use crate::graphics::{Geometry, Rectangle, Text};
 
 /// A constant for the paddle movement velocity.
-const PADDLE_VELOCITY: f32 = 0.005;
+const PADDLE_VELOCITY: f32 = 0.001;
 
 pub struct Game {
     pub entities: HashMap<String, Entity>,
@@ -93,19 +94,19 @@ impl Game {
         }
     }
 
-    pub fn tick(&mut self) {
+    pub fn tick(&mut self, dt: Duration) {
         // TODO There's gotta be a cleaner way to do this update.
         self.entities
             .entry(String::from("right-paddle"))
             .and_modify(|x| {
-                x.pos.Y += self.right_player.y_movement * PADDLE_VELOCITY;
+                x.pos.Y += self.right_player.y_movement * PADDLE_VELOCITY * dt.as_millis() as f32;
             });
 
         // TODO There's gotta be a cleaner way to do this update.
         self.entities
             .entry(String::from("left-paddle"))
             .and_modify(|x| {
-                x.pos.Y += self.left_player.y_movement * PADDLE_VELOCITY;
+                x.pos.Y += self.left_player.y_movement * PADDLE_VELOCITY * dt.as_millis() as f32;
             });
 
         // TODO apply movement
