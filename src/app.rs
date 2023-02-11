@@ -14,11 +14,9 @@ pub struct App {
 
 impl App {
     pub fn new(window: HWND) -> Self {
-        let graphics = Graphics::new(window).unwrap();
-        let game = Game::new();
         let mut app = App {
-            graphics,
-            game,
+            graphics: Graphics::new(window).unwrap(),
+            game: Game::new(),
             tick_time: Instant::now(),
         };
         unsafe { SetWindowLongPtrA(window, GWLP_USERDATA, &mut app as *mut _ as _) };
