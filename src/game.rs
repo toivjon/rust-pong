@@ -113,6 +113,26 @@ impl Game {
 
         // TODO apply movement
         // TODO check collisions
+
+        // TODO There's gotta be a cleaner way to do this update.
+        self.entities
+            .entry(String::from("right-paddle"))
+            .and_modify(|x| {
+                if x.pos.Y < 0.03 {
+                    x.pos.Y = 0.03;
+                }
+                // TODO check down
+            });
+
+        // TODO There's gotta be a cleaner way to do this update.
+        self.entities
+            .entry(String::from("left-paddle"))
+            .and_modify(|x| {
+                if x.pos.Y < 0.03 {
+                    x.pos.Y = 0.03;
+                }
+                // TODO check down
+            });
     }
 
     pub fn on_key_down(&mut self, key: u16) {
