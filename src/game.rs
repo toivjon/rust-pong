@@ -120,8 +120,9 @@ impl Game {
             .and_modify(|x| {
                 if x.pos.Y < 0.03 {
                     x.pos.Y = 0.03;
+                } else if x.pos.Y > (1.0 - 0.03 - 0.15) {
+                    x.pos.Y = 1.0 - 0.03 - 0.15;
                 }
-                // TODO check down
             });
 
         // TODO There's gotta be a cleaner way to do this update.
@@ -130,8 +131,9 @@ impl Game {
             .and_modify(|x| {
                 if x.pos.Y < 0.03 {
                     x.pos.Y = 0.03;
+                } else if x.pos.Y > (1.0 - 0.03 - 0.15) {
+                    x.pos.Y = 1.0 - 0.03 - 0.15;
                 }
-                // TODO check down
             });
     }
 
