@@ -6,49 +6,6 @@ use windows::{core::Result, s, Win32::System::LibraryLoader::GetModuleHandleA};
 
 use crate::{game::Game, graphics::Graphics};
 
-unsafe fn create_window() -> HWND {
-    // Acquire the module handle of the application.
-    let instance = GetModuleHandleA(None).unwrap();
-    debug_assert!(!instance.is_invalid());
-
-    // Register a window class for the application.
-    let class_name = s!("window");
-    let class_result = RegisterClassA(&WNDCLASSA {
-        hCursor: LoadCursorW(None, IDC_ARROW).unwrap(),
-        hInstance: instance,
-        lpszClassName: class_name,
-        style: CS_HREDRAW | CS_VREDRAW,
-        lpfnWndProc: Some(wndproc),
-        ..Default::default()
-    });
-    debug_assert!(class_result != 0);
-
-    // Build the application window.
-    CreateWindowExA(
-        WINDOW_EX_STYLE::default(),
-        class_name,
-        s!("Pong"),
-        WS_OVERLAPPEDWINDOW | WS_VISIBLE,
-        CW_USEDEFAULT,
-        CW_USEDEFAULT,
-        CW_USEDEFAULT,
-        CW_USEDEFAULT,
-        None,
-        None,
-        instance,
-        None,
-    )
-}
-
-/// A message router for the incoming operating system messages for the application.
-unsafe extern "system" fn wndproc(hwnd: HWND, msg: u32, wparam: WPARAM, lparam: LPARAM) -> LRESULT {
-    let app = GetWindowLongPtrA(hwnd, GWLP_USERDATA) as *mut App;
-    if !app.is_null() {
-        return (*app).message_handler(msg, wparam, lparam);
-    }
-    DefWindowProcA(hwnd, msg, wparam, lparam)
-}
-
 pub struct App {
     hwnd: HWND,
     graphics: Graphics,
@@ -105,4 +62,47 @@ impl App {
     pub fn draw(&mut self) -> Result<()> {
         self.graphics.draw(&self.game.entities)
     }
+}
+
+unsafe fn create_window() -> HWND {
+    // Acquire the module handle of the application.
+    let instance = GetModuleHandleA(None).unwrap();
+    debug_assert!(!instance.is_invalid());
+
+    // Register a window class for the application.
+    let class_name = s!("window");
+    let class_result = RegisterClassA(&WNDCLASSA {
+        hCursor: LoadCursorW(None, IDC_ARROW).unwrap(),
+        hInstance: instance,
+        lpszClassName: class_name,
+        style: CS_HREDRAW | CS_VREDRAW,
+        lpfnWndProc: Some(wndproc),
+        ..Default::default()
+    });
+    debug_assert!(class_result != 0);
+
+    // Build the application window.
+    CreateWindowExA(
+        WINDOW_EX_STYLE::default(),
+        class_name,
+        s!("Pong"),
+        WS_OVERLAPPEDWINDOW | WS_VISIBLE,
+        CW_USEDEFAULT,
+        CW_USEDEFAULT,
+        CW_USEDEFAULT,
+        CW_USEDEFAULT,
+        None,
+        None,
+        instance,
+        None,
+    )
+}
+
+/// A message router for the incoming operating system messages for the application.
+unsafe extern "system" fn wndproc(hwnd: HWND, msg: u32, wparam: WPARAM, lparam: LPARAM) -> LRESULT {
+    let app = GetWindowLongPtrA(hwnd, GWLP_USERDATA) as *mut App;
+    if !app.is_null() {
+        return (*app).message_handler(msg, wparam, lparam);
+    }
+    DefWindowProcA(hwnd, msg, wparam, lparam)
 }
