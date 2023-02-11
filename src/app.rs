@@ -25,33 +25,16 @@ impl App {
         app
     }
 
-    /// A handler for the incoming operating system messages for the application.
-    pub unsafe fn message_handler(
-        &mut self,
-        hwnd: HWND,
-        msg: u32,
-        wparam: WPARAM,
-        lparam: LPARAM,
-    ) -> LRESULT {
-        match msg {
-            WM_DESTROY => {
-                PostQuitMessage(0);
-                LRESULT(0)
-            }
-            WM_SIZE => {
-                self.graphics.resize().unwrap();
-                LRESULT(0)
-            }
-            WM_KEYDOWN => {
-                self.game.on_key_down(wparam.0 as u16);
-                LRESULT(0)
-            }
-            WM_KEYUP => {
-                self.game.on_key_up(wparam.0 as u16);
-                LRESULT(0)
-            }
-            _ => DefWindowProcA(hwnd, msg, wparam, lparam),
-        }
+    pub fn on_resize(&mut self) {
+        self.graphics.resize().unwrap()
+    }
+
+    pub fn on_key_down(&mut self, key: u16) {
+        self.game.on_key_down(key);
+    }
+
+    pub fn on_key_up(&mut self, key: u16) {
+        self.game.on_key_up(key);
     }
 
     pub fn tick(&mut self) {
