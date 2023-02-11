@@ -95,18 +95,20 @@ impl Game {
     }
 
     pub fn tick(&mut self, dt: Duration) {
+        let millis = dt.as_millis() as f32;
+
         // TODO There's gotta be a cleaner way to do this update.
         self.entities
             .entry(String::from("right-paddle"))
             .and_modify(|x| {
-                x.pos.Y += self.right_player.y_movement * PADDLE_VELOCITY * dt.as_millis() as f32;
+                x.pos.Y += self.right_player.y_movement * PADDLE_VELOCITY * millis;
             });
 
         // TODO There's gotta be a cleaner way to do this update.
         self.entities
             .entry(String::from("left-paddle"))
             .and_modify(|x| {
-                x.pos.Y += self.left_player.y_movement * PADDLE_VELOCITY * dt.as_millis() as f32;
+                x.pos.Y += self.left_player.y_movement * PADDLE_VELOCITY * millis;
             });
 
         // TODO apply movement
