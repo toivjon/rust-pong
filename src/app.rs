@@ -44,6 +44,6 @@ impl App {
     }
 
     pub fn draw(&mut self) -> Result<()> {
-        self.graphics.draw(&self.game.entities)
+        self.graphics.draw(&self.game)
     }
 }

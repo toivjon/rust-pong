@@ -1,5 +1,3 @@
-use std::collections::HashMap;
-
 use windows::core::Result;
 use windows::w;
 use windows::Foundation::Numerics::{Matrix3x2, Vector2};
@@ -9,7 +7,7 @@ use windows::Win32::Graphics::Direct2D::*;
 use windows::Win32::Graphics::DirectWrite::*;
 use windows::Win32::UI::WindowsAndMessaging::GetClientRect;
 
-use crate::game::{Entity, EntityID};
+use crate::game::{Entity, Game};
 
 /// A constant for the view aspect ratio.
 const ASPECT: f32 = 1.3;
@@ -36,7 +34,7 @@ impl Graphics {
         })
     }
 
-    pub fn draw(&mut self, entitites: &HashMap<EntityID, Entity>) -> Result<()> {
+    pub fn draw(&mut self, game: &Game) -> Result<()> {
         if self.target.is_none() {
             self.create_target()?;
         }
@@ -44,11 +42,15 @@ impl Graphics {
         unsafe {
             ctx.BeginDraw();
             ctx.Clear(Some(&D2D1_COLOR_F::default()));
-            entitites.values().for_each(|entity| {
-                let transform = Matrix3x2::translation(entity.pos.X, entity.pos.Y);
-                ctx.SetTransform(&(transform * self.transform));
-                entity.geo.draw(self);
-            });
+
+            self.draw_entity(&game.ball);
+            self.draw_entity(&game.left_paddle);
+            self.draw_entity(&game.right_paddle);
+            self.draw_entity(&game.top_wall);
+            self.draw_entity(&game.bottom_wall);
+            self.draw_entity(&game.left_score);
+            self.draw_entity(&game.right_score);
+
             if let Err(error) = ctx.EndDraw(None, None) {
                 if error.code() == D2DERR_RECREATE_TARGET {
                     self.release_target();
@@ -56,6 +58,13 @@ impl Graphics {
             }
         }
         Ok(())
+    }
+
+    unsafe fn draw_entity(&self, entity: &Entity) {
+        let ctx = self.target.as_ref().unwrap();
+        let transform = Matrix3x2::translation(entity.pos.X, entity.pos.Y);
+        ctx.SetTransform(&(transform * self.transform));
+        entity.geo.draw(self);
     }
 
     /// Resize the graphics by changing the size of the render target.
