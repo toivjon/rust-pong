@@ -93,8 +93,6 @@ impl Game {
         self.ball.pos.Y += self.ball_y_movement * BALL_VELOCITY * millis as f32;
         self.ball.pos.X += self.ball_x_movement * BALL_VELOCITY * millis as f32;
 
-        // TODO check collisions
-
         // reflect ball Y-movement if it hits the bottom wall.
         if self.bottom_wall.pos.Y <= (self.ball.pos.Y + 0.0325) {
             self.ball.pos.Y = self.bottom_wall.pos.Y - 0.0325 - 0.001; // nudge
@@ -107,16 +105,30 @@ impl Game {
             self.ball_y_movement = -self.ball_y_movement;
         }
 
+        // don't let right paddle to go out of wall limits
         if self.right_paddle.pos.Y < 0.03 {
             self.right_paddle.pos.Y = 0.03;
         } else if self.right_paddle.pos.Y > (1.0 - 0.03 - 0.15) {
             self.right_paddle.pos.Y = 1.0 - 0.03 - 0.15;
         }
 
+        // don't let left paddle to go out of wall limits
         if self.left_paddle.pos.Y < 0.03 {
             self.left_paddle.pos.Y = 0.03;
         } else if self.left_paddle.pos.Y > (1.0 - 0.03 - 0.15) {
             self.left_paddle.pos.Y = 1.0 - 0.03 - 0.15;
+        }
+
+        // reflect ball X-movement if it hits the left paddle.
+        if (self.left_paddle.pos.X + 0.025) >= self.ball.pos.X {
+            self.ball.pos.X = self.left_paddle.pos.X + 0.025 + 0.001; // nudge
+            self.ball_x_movement = -self.ball_x_movement;
+        }
+
+        // reflect ball X-movement if it hits the right paddle.
+        if self.right_paddle.pos.X <= (self.ball.pos.X + 0.025) {
+            self.ball.pos.X = self.right_paddle.pos.X - 0.025 - 0.001; // nudge
+            self.ball_x_movement = -self.ball_x_movement;
         }
     }
 
