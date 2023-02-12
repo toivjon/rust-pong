@@ -106,46 +106,38 @@ impl Game {
     }
 
     pub fn tick(&mut self, dt: Duration) {
-        let millis = dt.as_millis() as f32;
+        let millis = dt.as_millis();
 
         // TODO There's gotta be a cleaner way to do this update.
-        self.entities
-            .entry(EntityID::RightPaddle)
-            .and_modify(|x| {
-                x.pos.Y += self.right_player.y_movement * PADDLE_VELOCITY * millis;
-            });
+        self.entities.entry(EntityID::RightPaddle).and_modify(|x| {
+            x.pos.Y += self.right_player.y_movement * PADDLE_VELOCITY * millis as f32;
+        });
 
         // TODO There's gotta be a cleaner way to do this update.
-        self.entities
-            .entry(EntityID::LeftPaddle)
-            .and_modify(|x| {
-                x.pos.Y += self.left_player.y_movement * PADDLE_VELOCITY * millis;
-            });
+        self.entities.entry(EntityID::LeftPaddle).and_modify(|x| {
+            x.pos.Y += self.left_player.y_movement * PADDLE_VELOCITY * millis as f32;
+        });
 
         // TODO apply movement
         // TODO check collisions
 
         // TODO There's gotta be a cleaner way to do this update.
-        self.entities
-            .entry(EntityID::RightPaddle)
-            .and_modify(|x| {
-                if x.pos.Y < 0.03 {
-                    x.pos.Y = 0.03;
-                } else if x.pos.Y > (1.0 - 0.03 - 0.15) {
-                    x.pos.Y = 1.0 - 0.03 - 0.15;
-                }
-            });
+        self.entities.entry(EntityID::RightPaddle).and_modify(|x| {
+            if x.pos.Y < 0.03 {
+                x.pos.Y = 0.03;
+            } else if x.pos.Y > (1.0 - 0.03 - 0.15) {
+                x.pos.Y = 1.0 - 0.03 - 0.15;
+            }
+        });
 
         // TODO There's gotta be a cleaner way to do this update.
-        self.entities
-            .entry(EntityID::LeftPaddle)
-            .and_modify(|x| {
-                if x.pos.Y < 0.03 {
-                    x.pos.Y = 0.03;
-                } else if x.pos.Y > (1.0 - 0.03 - 0.15) {
-                    x.pos.Y = 1.0 - 0.03 - 0.15;
-                }
-            });
+        self.entities.entry(EntityID::LeftPaddle).and_modify(|x| {
+            if x.pos.Y < 0.03 {
+                x.pos.Y = 0.03;
+            } else if x.pos.Y > (1.0 - 0.03 - 0.15) {
+                x.pos.Y = 1.0 - 0.03 - 0.15;
+            }
+        });
     }
 
     pub fn on_key_down(&mut self, key: u16) {
