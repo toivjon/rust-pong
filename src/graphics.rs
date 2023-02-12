@@ -9,7 +9,7 @@ use windows::Win32::Graphics::Direct2D::*;
 use windows::Win32::Graphics::DirectWrite::*;
 use windows::Win32::UI::WindowsAndMessaging::GetClientRect;
 
-use crate::game::Entity;
+use crate::game::{Entity, EntityID};
 
 /// A constant for the view aspect ratio.
 const ASPECT: f32 = 1.3;
@@ -36,7 +36,7 @@ impl Graphics {
         })
     }
 
-    pub fn draw(&mut self, entitites: &HashMap<String, Entity>) -> Result<()> {
+    pub fn draw(&mut self, entitites: &HashMap<EntityID, Entity>) -> Result<()> {
         if self.target.is_none() {
             self.create_target()?;
         }

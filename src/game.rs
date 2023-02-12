@@ -9,8 +9,19 @@ use crate::graphics::{Geometry, Rectangle, Text};
 /// A constant for the paddle movement velocity.
 const PADDLE_VELOCITY: f32 = 0.001;
 
+#[derive(Hash, PartialEq, Eq)]
+pub enum EntityID {
+    Ball,
+    LeftPaddle,
+    RightPaddle,
+    TopWall,
+    BottomWall,
+    LeftScore,
+    RightScore,
+}
+
 pub struct Game {
-    pub entities: HashMap<String, Entity>,
+    pub entities: HashMap<EntityID, Entity>,
     left_player: Player,
     right_player: Player,
 }
@@ -24,7 +35,7 @@ impl Game {
         Game {
             entities: HashMap::from([
                 (
-                    String::from("ball"),
+                    EntityID::Ball,
                     Entity {
                         pos: Vector2 { X: 0.5, Y: 0.5 },
                         geo: Box::new(Rectangle {
@@ -34,7 +45,7 @@ impl Game {
                     },
                 ),
                 (
-                    String::from("left-paddle"),
+                    EntityID::LeftPaddle,
                     Entity {
                         pos: Vector2 {
                             X: 0.05,
@@ -44,7 +55,7 @@ impl Game {
                     },
                 ),
                 (
-                    String::from("right-paddle"),
+                    EntityID::RightPaddle,
                     Entity {
                         pos: Vector2 {
                             X: 1.0 - 0.025 - 0.05,
@@ -54,14 +65,14 @@ impl Game {
                     },
                 ),
                 (
-                    String::from("top-border"),
+                    EntityID::TopWall,
                     Entity {
                         pos: Vector2 { X: 0.0, Y: 0.0 },
                         geo: Box::new(Rectangle { w: 1.0, h: 0.03 }),
                     },
                 ),
                 (
-                    String::from("bottom-border"),
+                    EntityID::BottomWall,
                     Entity {
                         pos: Vector2 {
                             X: 0.0,
@@ -71,7 +82,7 @@ impl Game {
                     },
                 ),
                 (
-                    String::from("left-score"),
+                    EntityID::LeftScore,
                     Entity {
                         pos: Vector2 { X: 0.35, Y: 0.15 },
                         geo: Box::new(Text {
@@ -80,7 +91,7 @@ impl Game {
                     },
                 ),
                 (
-                    String::from("right-score"),
+                    EntityID::RightScore,
                     Entity {
                         pos: Vector2 { X: 0.65, Y: 0.15 },
                         geo: Box::new(Text {
@@ -99,14 +110,14 @@ impl Game {
 
         // TODO There's gotta be a cleaner way to do this update.
         self.entities
-            .entry(String::from("right-paddle"))
+            .entry(EntityID::RightPaddle)
             .and_modify(|x| {
                 x.pos.Y += self.right_player.y_movement * PADDLE_VELOCITY * millis;
             });
 
         // TODO There's gotta be a cleaner way to do this update.
         self.entities
-            .entry(String::from("left-paddle"))
+            .entry(EntityID::LeftPaddle)
             .and_modify(|x| {
                 x.pos.Y += self.left_player.y_movement * PADDLE_VELOCITY * millis;
             });
@@ -116,7 +127,7 @@ impl Game {
 
         // TODO There's gotta be a cleaner way to do this update.
         self.entities
-            .entry(String::from("right-paddle"))
+            .entry(EntityID::RightPaddle)
             .and_modify(|x| {
                 if x.pos.Y < 0.03 {
                     x.pos.Y = 0.03;
@@ -127,7 +138,7 @@ impl Game {
 
         // TODO There's gotta be a cleaner way to do this update.
         self.entities
-            .entry(String::from("left-paddle"))
+            .entry(EntityID::LeftPaddle)
             .and_modify(|x| {
                 if x.pos.Y < 0.03 {
                     x.pos.Y = 0.03;
