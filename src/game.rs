@@ -1,4 +1,3 @@
-use std::collections::HashMap;
 use std::time::Duration;
 
 use windows::Win32::UI::Input::KeyboardAndMouse::*;
