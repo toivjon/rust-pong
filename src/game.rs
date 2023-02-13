@@ -120,16 +120,39 @@ impl Game {
         }
 
         // reflect ball X-movement if it hits the left paddle.
-        if (self.left_paddle.pos.X + 0.025) >= self.ball.pos.X {
+        if Self::collides(
+            &self.left_paddle.pos,
+            &Vector2 { X: 0.025, Y: 0.15 },
+            &self.ball.pos,
+            &Vector2 {
+                X: 0.025,
+                Y: 0.0325,
+            },
+        ) {
             self.ball.pos.X = self.left_paddle.pos.X + 0.025 + 0.001; // nudge
             self.ball_x_movement = -self.ball_x_movement;
         }
 
         // reflect ball X-movement if it hits the right paddle.
-        if self.right_paddle.pos.X <= (self.ball.pos.X + 0.025) {
+        if Self::collides(
+            &self.right_paddle.pos,
+            &Vector2 { X: 0.025, Y: 0.15 },
+            &self.ball.pos,
+            &Vector2 {
+                X: 0.025,
+                Y: 0.0325,
+            },
+        ) {
             self.ball.pos.X = self.right_paddle.pos.X - 0.025 - 0.001; // nudge
             self.ball_x_movement = -self.ball_x_movement;
         }
+    }
+
+    fn collides(a_pos: &Vector2, a_size: &Vector2, b_pos: &Vector2, b_size: &Vector2) -> bool {
+        a_pos.X < (b_pos.X + b_size.X)
+            && a_pos.Y < (b_pos.Y + b_size.Y)
+            && (a_pos.X + a_size.X) > b_pos.X
+            && (a_pos.Y + a_size.Y) > b_pos.Y
     }
 
     pub fn on_key_down(&mut self, key: u16) {
