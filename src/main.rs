@@ -15,7 +15,7 @@ fn main() -> Result<()> {
     let mut msg = MSG::default();
     loop {
         unsafe {
-            // Check and acquire system message from the message queue.
+            // Check and acquire system messages from the message queue.
             while PeekMessageA(&mut msg, HWND(0), 0, 0, PM_REMOVE).into() {
                 if msg.message == WM_QUIT {
                     return Ok(());
