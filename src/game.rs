@@ -146,6 +146,20 @@ impl Game {
             self.ball.pos.X = self.right_paddle.pos.X - 0.025 - 0.001; // nudge
             self.ball_x_movement = -self.ball_x_movement;
         }
+
+        // Check whether ball hits the left goal.
+        if self.ball.pos.X <= 0.0 {
+            self.ball.pos.X = 0.5;
+            self.ball.pos.Y = 0.5;
+            // TODO clear paddle positions.
+        }
+
+        // Check whether ball hits the right goal.
+        if (self.ball.pos.X + 0.025) >= 1.0 {
+            self.ball.pos.X = 0.5;
+            self.ball.pos.Y = 0.5;
+            // TODO clear paddle positions.
+        }
     }
 
     fn collides(a_pos: &Vector2, a_size: &Vector2, b_pos: &Vector2, b_size: &Vector2) -> bool {
