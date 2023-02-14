@@ -24,6 +24,8 @@ pub struct Game {
 
     left_player: Player,
     right_player: Player,
+
+    countdown: Duration,
 }
 
 struct Player {
@@ -81,11 +83,18 @@ impl Game {
             ball_y_movement: -1.0,
             left_player: Player { y_movement: 0.0 },
             right_player: Player { y_movement: 0.0 },
+            countdown: Duration::from_secs(1),
         }
     }
 
     pub fn tick(&mut self, dt: Duration) {
         let millis = dt.as_millis();
+
+        // Skip physics if countdown is still in progress.
+        self.countdown -= Duration::min(self.countdown, dt);
+        if !self.countdown.is_zero() {
+            return;
+        }
 
         self.right_paddle.pos.Y += self.right_player.y_movement * PADDLE_VELOCITY * millis as f32;
         self.left_paddle.pos.Y += self.left_player.y_movement * PADDLE_VELOCITY * millis as f32;
@@ -149,17 +158,22 @@ impl Game {
 
         // Check whether ball hits the left goal.
         if self.ball.pos.X <= 0.0 {
-            self.ball.pos.X = 0.5;
-            self.ball.pos.Y = 0.5;
-            // TODO clear paddle positions.
+            self.clear_state();
+            // TODO increment points.
         }
 
         // Check whether ball hits the right goal.
         if (self.ball.pos.X + 0.025) >= 1.0 {
-            self.ball.pos.X = 0.5;
-            self.ball.pos.Y = 0.5;
-            // TODO clear paddle positions.
+            self.clear_state();
+            // TODO increment points.
         }
+    }
+
+    /// Clear the gameyard state by centering the ball and starting a new countdown.
+    fn clear_state(&mut self) {
+        self.ball.pos.X = 0.5;
+        self.ball.pos.Y = 0.5;
+        self.countdown = Duration::from_secs(1);
     }
 
     fn collides(a_pos: &Vector2, a_size: &Vector2, b_pos: &Vector2, b_size: &Vector2) -> bool {
