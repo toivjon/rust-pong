@@ -169,10 +169,12 @@ impl Game {
         }
     }
 
-    /// Clear the gameyard state by centering the ball and starting a new countdown.
+    /// Clear the gameyard state by centering the ball and paddles and starting a new countdown.
     fn clear_state(&mut self) {
         self.ball.pos.X = 0.5;
         self.ball.pos.Y = 0.5;
+        self.left_paddle.pos.Y = 0.425;
+        self.right_paddle.pos.Y = 0.425;
         self.countdown = Duration::from_secs(1);
     }
 
