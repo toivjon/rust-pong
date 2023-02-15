@@ -14,6 +14,9 @@ const PADDLE_VELOCITY: f32 = 0.001;
 /// A constant for the ball movement velocity.
 const BALL_VELOCITY: f32 = 0.0003;
 
+/// The duration of the countdown at the beginning of each round.
+const COUNTDOWN: Duration = Duration::from_secs(1);
+
 pub struct Game {
     pub ball: Entity,
     pub left_paddle: Entity,
@@ -94,7 +97,7 @@ impl Game {
                 movement: 0.0,
                 points: 0,
             },
-            countdown: Duration::from_secs(1),
+            countdown: COUNTDOWN,
         }
     }
 
@@ -203,7 +206,7 @@ impl Game {
         self.ball.pos.Y = 0.5;
         self.left_paddle.pos.Y = 0.425;
         self.right_paddle.pos.Y = 0.425;
-        self.countdown = Duration::from_secs(1);
+        self.countdown = COUNTDOWN;
     }
 
     fn collides(a_pos: &Vector2, a_size: &Vector2, b_pos: &Vector2, b_size: &Vector2) -> bool {
