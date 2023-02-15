@@ -110,14 +110,7 @@ impl Game {
         if !self.countdown.is_zero() {
             return;
         }
-
-        let millis = dt.as_millis() as f32;
-
-        self.right_paddle.pos.Y += self.right_player.movement * PADDLE_VELOCITY * millis;
-        self.left_paddle.pos.Y += self.left_player.movement * PADDLE_VELOCITY * millis;
-
-        self.ball.pos.Y += self.ball_y_movement * BALL_VELOCITY * millis;
-        self.ball.pos.X += self.ball_x_movement * BALL_VELOCITY * millis;
+        self.apply_movement(dt);
 
         // reflect ball Y-movement if it hits the bottom wall.
         if self.bottom_wall.pos.Y <= (self.ball.pos.Y + 0.0325) {
@@ -199,6 +192,15 @@ impl Game {
                 *text = boom
             };
         }
+    }
+
+    /// Apply the movement for all dynamic entities based on the provided delta time.
+    fn apply_movement(&mut self, dt: Duration) {
+        let millis = dt.as_millis() as f32;
+        self.right_paddle.pos.Y += self.right_player.movement * PADDLE_VELOCITY * millis;
+        self.left_paddle.pos.Y += self.left_player.movement * PADDLE_VELOCITY * millis;
+        self.ball.pos.Y += self.ball_y_movement * BALL_VELOCITY * millis;
+        self.ball.pos.X += self.ball_x_movement * BALL_VELOCITY * millis;
     }
 
     /// Clear the gameyard state by centering the ball and paddles and starting a new countdown.
