@@ -1,7 +1,7 @@
 use std::time::Duration;
 
-use windows::Win32::UI::Input::KeyboardAndMouse::*;
 use windows::w;
+use windows::Win32::UI::Input::KeyboardAndMouse::*;
 
 use crate::geometry::{Rectangle, Text};
 
@@ -44,8 +44,8 @@ impl Game {
     pub fn new() -> Self {
         Game {
             ball: Rectangle {
-                x: 0.5 - 0.025,
-                y: 0.5 - 0.0325,
+                x: 0.5 - (0.025 / 2.0),
+                y: 0.5 - (0.0325 / 2.0),
                 w: 0.025,
                 h: 0.0325,
             },
@@ -178,8 +178,8 @@ impl Game {
 
     /// Clear the gameyard state by centering the ball and paddles and starting a new countdown.
     fn clear_state(&mut self) {
-        self.ball.x = 0.5 - 0.025;
-        self.ball.y = 0.5 - 0.0325;
+        self.ball.x = 0.5 - (self.ball.w / 2.0);
+        self.ball.y = 0.5 - (self.ball.h / 2.0);
         self.left_paddle.y = 0.425;
         self.right_paddle.y = 0.425;
         self.countdown = COUNTDOWN;
