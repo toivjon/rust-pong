@@ -7,8 +7,8 @@ use windows::Win32::Graphics::Direct2D::*;
 use windows::Win32::Graphics::DirectWrite::*;
 use windows::Win32::UI::WindowsAndMessaging::GetClientRect;
 
-use crate::game::{Entity, Game};
-use crate::geometry::Rectangle;
+use crate::game::Game;
+use crate::geometry::{Rectangle, Text};
 
 /// A constant for the view aspect ratio.
 const ASPECT: f32 = 1.3;
@@ -64,6 +64,23 @@ impl Graphics {
         }
     }
 
+    pub fn draw_text(&self, text: &Text) {
+        let ctx = self.target.as_ref().unwrap();
+        let brush = self.brush.as_ref().unwrap();
+        unsafe {
+            let transform = Matrix3x2::translation(text.x, text.y);
+            ctx.SetTransform(&(transform * self.transform));
+            ctx.DrawText(
+                &text.text,
+                &self.text_format,
+                &D2D_RECT_F::default(),
+                brush,
+                D2D1_DRAW_TEXT_OPTIONS_NONE,
+                DWRITE_MEASURING_MODE_NATURAL,
+            )
+        }
+    }
+
     pub fn draw(&mut self, game: &Game) {
         self.draw_rectangle(&game.ball);
         self.draw_rectangle(&game.ball);
@@ -71,8 +88,8 @@ impl Graphics {
         self.draw_rectangle(&game.right_paddle);
         self.draw_rectangle(&game.top_wall);
         self.draw_rectangle(&game.bottom_wall);
-        self.draw_entity(&game.left_score);
-        self.draw_entity(&game.right_score);
+        self.draw_text(&game.left_score);
+        self.draw_text(&game.right_score);
     }
 
     pub fn end_draw(&mut self) {
@@ -82,13 +99,6 @@ impl Graphics {
                 self.release_target();
             }
         }
-    }
-
-    fn draw_entity(&self, entity: &Entity) {
-        let ctx = self.target.as_ref().unwrap();
-        let transform = Matrix3x2::translation(entity.pos.X, entity.pos.Y);
-        unsafe { ctx.SetTransform(&(transform * self.transform)) };
-        entity.geo.draw(self);
     }
 
     /// Resize the graphics by changing the size of the render target.
@@ -210,28 +220,5 @@ fn create_text_format() -> IDWriteTextFormat {
             .SetWordWrapping(DWRITE_WORD_WRAPPING_NO_WRAP)
             .unwrap();
         text_format
-    }
-}
-
-pub enum Geometry {
-    Text { text: Vec<u16> },
-}
-
-impl Geometry {
-    pub fn draw(&self, graphics: &Graphics) {
-        unsafe {
-            let brush = graphics.brush.as_ref().unwrap();
-            let ctx = graphics.target.as_ref().unwrap();
-            match self {
-                Geometry::Text { text } => ctx.DrawText(
-                    text,
-                    &graphics.text_format,
-                    &D2D_RECT_F::default(),
-                    brush,
-                    D2D1_DRAW_TEXT_OPTIONS_NONE,
-                    DWRITE_MEASURING_MODE_NATURAL,
-                ),
-            }
-        }
     }
 }

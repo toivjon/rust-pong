@@ -1,12 +1,9 @@
 use std::time::Duration;
 
 use windows::Win32::UI::Input::KeyboardAndMouse::*;
-use windows::{w, Foundation::Numerics::Vector2};
+use windows::w;
 
-use crate::geometry::Rectangle;
-use crate::graphics::Geometry::Text;
-
-use crate::graphics::Geometry;
+use crate::geometry::{Rectangle, Text};
 
 /// A constant for the paddle movement velocity.
 const PADDLE_VELOCITY: f32 = 0.001;
@@ -26,8 +23,8 @@ pub struct Game {
     pub right_paddle: Rectangle,
     pub top_wall: Rectangle,
     pub bottom_wall: Rectangle,
-    pub left_score: Entity,
-    pub right_score: Entity,
+    pub left_score: Text,
+    pub right_score: Text,
 
     ball_x_movement: f32,
     ball_y_movement: f32,
@@ -76,17 +73,15 @@ impl Game {
                 w: 1.0,
                 h: 0.03,
             },
-            left_score: Entity {
-                pos: Vector2 { X: 0.35, Y: 0.15 },
-                geo: Text {
-                    text: unsafe { w!("0").as_wide().to_vec() },
-                },
+            left_score: Text {
+                x: 0.35,
+                y: 0.15,
+                text: unsafe { w!("0").as_wide().to_vec() },
             },
-            right_score: Entity {
-                pos: Vector2 { X: 0.65, Y: 0.15 },
-                geo: Text {
-                    text: unsafe { w!("0").as_wide().to_vec() },
-                },
+            right_score: Text {
+                x: 0.65,
+                y: 0.15,
+                text: unsafe { w!("0").as_wide().to_vec() },
             },
             ball_x_movement: 1.0,
             ball_y_movement: -1.0,
@@ -159,9 +154,7 @@ impl Game {
                 .to_string()
                 .encode_utf16()
                 .collect();
-            if let Geometry::Text { text } = &mut self.right_score.geo {
-                *text = boom
-            };
+            self.right_score.text = boom;
         }
 
         // Check whether ball hits the right goal.
@@ -170,9 +163,7 @@ impl Game {
             self.left_player.points = u8::min(9, self.left_player.points + 1);
             // TODO check if game is over?
             let boom: Vec<u16> = self.left_player.points.to_string().encode_utf16().collect();
-            if let Geometry::Text { text } = &mut self.left_score.geo {
-                *text = boom
-            };
+            self.left_score.text = boom;
         }
     }
 
@@ -217,10 +208,4 @@ impl Game {
             _ => (),
         }
     }
-}
-
-/// An object representing a single item in the game world.
-pub struct Entity {
-    pub pos: Vector2,
-    pub geo: Geometry,
 }

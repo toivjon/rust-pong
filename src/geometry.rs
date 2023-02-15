@@ -11,5 +11,4 @@ pub struct Text {
     pub x: f32,
     pub y: f32,
     pub text: Vec<u16>,
-    pub size: f32,
 }
