@@ -3,7 +3,7 @@ use std::time::Duration;
 use windows::Win32::UI::Input::KeyboardAndMouse::*;
 use windows::{w, Foundation::Numerics::Vector2};
 
-use crate::graphics::Geometry::Rectangle;
+use crate::geometry::Rectangle;
 use crate::graphics::Geometry::Text;
 
 use crate::graphics::Geometry;
@@ -21,11 +21,11 @@ const COUNTDOWN: Duration = Duration::from_secs(1);
 const NUDGE: f32 = 0.001;
 
 pub struct Game {
-    pub ball: Entity,
-    pub left_paddle: Entity,
-    pub right_paddle: Entity,
-    pub top_wall: Entity,
-    pub bottom_wall: Entity,
+    pub ball: Rectangle,
+    pub left_paddle: Rectangle,
+    pub right_paddle: Rectangle,
+    pub top_wall: Rectangle,
+    pub bottom_wall: Rectangle,
     pub left_score: Entity,
     pub right_score: Entity,
 
@@ -46,37 +46,35 @@ struct Player {
 impl Game {
     pub fn new() -> Self {
         Game {
-            ball: Entity {
-                pos: Vector2 { X: 0.5, Y: 0.5 },
-                geo: Rectangle {
-                    w: 0.025,
-                    h: 0.0325,
-                },
+            ball: Rectangle {
+                x: 0.5 - 0.025,
+                y: 0.5 - 0.0325,
+                w: 0.025,
+                h: 0.0325,
             },
-            left_paddle: Entity {
-                pos: Vector2 {
-                    X: 0.05,
-                    Y: 0.5 - 0.075,
-                },
-                geo: Rectangle { w: 0.025, h: 0.15 },
+            left_paddle: Rectangle {
+                x: 0.05,
+                y: 0.5 - 0.075,
+                w: 0.025,
+                h: 0.15,
             },
-            right_paddle: Entity {
-                pos: Vector2 {
-                    X: 1.0 - 0.025 - 0.05,
-                    Y: 0.5 - (0.15 / 2.0),
-                },
-                geo: Rectangle { w: 0.025, h: 0.15 },
+            right_paddle: Rectangle {
+                x: 1.0 - 0.025 - 0.05,
+                y: 0.5 - (0.15 / 2.0),
+                w: 0.025,
+                h: 0.15,
             },
-            top_wall: Entity {
-                pos: Vector2 { X: 0.0, Y: 0.0 },
-                geo: Rectangle { w: 1.0, h: 0.03 },
+            top_wall: Rectangle {
+                x: 0.0,
+                y: 0.0,
+                w: 1.0,
+                h: 0.03,
             },
-            bottom_wall: Entity {
-                pos: Vector2 {
-                    X: 0.0,
-                    Y: 1.0 - 0.03,
-                },
-                geo: Rectangle { w: 1.0, h: 0.03 },
+            bottom_wall: Rectangle {
+                x: 0.0,
+                y: 1.0 - 0.03,
+                w: 1.0,
+                h: 0.03,
             },
             left_score: Entity {
                 pos: Vector2 { X: 0.35, Y: 0.15 },
@@ -113,61 +111,45 @@ impl Game {
         self.apply_movement(dt);
 
         // reflect ball Y-movement if it hits the bottom wall.
-        if self.bottom_wall.pos.Y <= (self.ball.pos.Y + 0.0325) {
-            self.ball.pos.Y = self.bottom_wall.pos.Y - 0.0325 - NUDGE;
+        if self.bottom_wall.y <= (self.ball.y + 0.0325) {
+            self.ball.y = self.bottom_wall.y - 0.0325 - NUDGE;
             self.ball_y_movement = -self.ball_y_movement;
         }
 
         // reflect ball Y-movement if it hits the top wall.
-        if (self.top_wall.pos.Y + 0.03) >= self.ball.pos.Y {
-            self.ball.pos.Y = self.top_wall.pos.Y + 0.03 + NUDGE;
+        if (self.top_wall.y + 0.03) >= self.ball.y {
+            self.ball.y = self.top_wall.y + 0.03 + NUDGE;
             self.ball_y_movement = -self.ball_y_movement;
         }
 
         // don't let right paddle to go out of wall limits
-        if self.right_paddle.pos.Y < 0.03 {
-            self.right_paddle.pos.Y = 0.03;
-        } else if self.right_paddle.pos.Y > (1.0 - 0.03 - 0.15) {
-            self.right_paddle.pos.Y = 1.0 - 0.03 - 0.15;
+        if self.right_paddle.y < 0.03 {
+            self.right_paddle.y = 0.03;
+        } else if self.right_paddle.y > (1.0 - 0.03 - 0.15) {
+            self.right_paddle.y = 1.0 - 0.03 - 0.15;
         }
 
         // don't let left paddle to go out of wall limits
-        if self.left_paddle.pos.Y < 0.03 {
-            self.left_paddle.pos.Y = 0.03;
-        } else if self.left_paddle.pos.Y > (1.0 - 0.03 - 0.15) {
-            self.left_paddle.pos.Y = 1.0 - 0.03 - 0.15;
+        if self.left_paddle.y < 0.03 {
+            self.left_paddle.y = 0.03;
+        } else if self.left_paddle.y > (1.0 - 0.03 - 0.15) {
+            self.left_paddle.y = 1.0 - 0.03 - 0.15;
         }
 
         // reflect ball X-movement if it hits the left paddle.
-        if Self::collides(
-            &self.left_paddle.pos,
-            &Vector2 { X: 0.025, Y: 0.15 },
-            &self.ball.pos,
-            &Vector2 {
-                X: 0.025,
-                Y: 0.0325,
-            },
-        ) {
-            self.ball.pos.X = self.left_paddle.pos.X + 0.025 + NUDGE;
+        if Self::collides(&self.left_paddle, &self.ball) {
+            self.ball.x = self.left_paddle.x + 0.025 + NUDGE;
             self.ball_x_movement = -self.ball_x_movement;
         }
 
         // reflect ball X-movement if it hits the right paddle.
-        if Self::collides(
-            &self.right_paddle.pos,
-            &Vector2 { X: 0.025, Y: 0.15 },
-            &self.ball.pos,
-            &Vector2 {
-                X: 0.025,
-                Y: 0.0325,
-            },
-        ) {
-            self.ball.pos.X = self.right_paddle.pos.X - 0.025 - NUDGE;
+        if Self::collides(&self.right_paddle, &self.ball) {
+            self.ball.x = self.right_paddle.x - 0.025 - NUDGE;
             self.ball_x_movement = -self.ball_x_movement;
         }
 
         // Check whether ball hits the left goal.
-        if self.ball.pos.X <= 0.0 {
+        if self.ball.x <= 0.0 {
             self.clear_state();
             self.right_player.points = u8::min(9, self.right_player.points + 1);
             // TODO check if game is over?
@@ -183,7 +165,7 @@ impl Game {
         }
 
         // Check whether ball hits the right goal.
-        if (self.ball.pos.X + 0.025) >= 1.0 {
+        if (self.ball.x + 0.025) >= 1.0 {
             self.clear_state();
             self.left_player.points = u8::min(9, self.left_player.points + 1);
             // TODO check if game is over?
@@ -197,26 +179,23 @@ impl Game {
     /// Apply the movement for all dynamic entities based on the provided delta time.
     fn apply_movement(&mut self, dt: Duration) {
         let millis = dt.as_millis() as f32;
-        self.right_paddle.pos.Y += self.right_player.movement * PADDLE_VELOCITY * millis;
-        self.left_paddle.pos.Y += self.left_player.movement * PADDLE_VELOCITY * millis;
-        self.ball.pos.Y += self.ball_y_movement * BALL_VELOCITY * millis;
-        self.ball.pos.X += self.ball_x_movement * BALL_VELOCITY * millis;
+        self.right_paddle.y += self.right_player.movement * PADDLE_VELOCITY * millis;
+        self.left_paddle.y += self.left_player.movement * PADDLE_VELOCITY * millis;
+        self.ball.y += self.ball_y_movement * BALL_VELOCITY * millis;
+        self.ball.x += self.ball_x_movement * BALL_VELOCITY * millis;
     }
 
     /// Clear the gameyard state by centering the ball and paddles and starting a new countdown.
     fn clear_state(&mut self) {
-        self.ball.pos.X = 0.5;
-        self.ball.pos.Y = 0.5;
-        self.left_paddle.pos.Y = 0.425;
-        self.right_paddle.pos.Y = 0.425;
+        self.ball.x = 0.5 - 0.025;
+        self.ball.y = 0.5 - 0.0325;
+        self.left_paddle.y = 0.425;
+        self.right_paddle.y = 0.425;
         self.countdown = COUNTDOWN;
     }
 
-    fn collides(a_pos: &Vector2, a_size: &Vector2, b_pos: &Vector2, b_size: &Vector2) -> bool {
-        a_pos.X < (b_pos.X + b_size.X)
-            && a_pos.Y < (b_pos.Y + b_size.Y)
-            && (a_pos.X + a_size.X) > b_pos.X
-            && (a_pos.Y + a_size.Y) > b_pos.Y
+    fn collides(a: &Rectangle, b: &Rectangle) -> bool {
+        a.x < (b.x + b.w) && a.y < (b.y + b.h) && (a.x + a.w) > b.x && (a.y + a.h) > b.y
     }
 
     pub fn on_key_down(&mut self, key: u16) {

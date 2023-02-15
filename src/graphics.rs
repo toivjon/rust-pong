@@ -8,6 +8,7 @@ use windows::Win32::Graphics::DirectWrite::*;
 use windows::Win32::UI::WindowsAndMessaging::GetClientRect;
 
 use crate::game::{Entity, Game};
+use crate::geometry::Rectangle;
 
 /// A constant for the view aspect ratio.
 const ASPECT: f32 = 1.3;
@@ -46,12 +47,30 @@ impl Graphics {
         Ok(())
     }
 
+    pub fn draw_rectangle(&self, rectangle: &Rectangle) {
+        let ctx = self.target.as_ref().unwrap();
+        let brush = self.brush.as_ref().unwrap();
+        unsafe {
+            let transform = Matrix3x2::translation(rectangle.x, rectangle.y);
+            ctx.SetTransform(&(transform * self.transform));
+            ctx.FillRectangle(
+                &D2D_RECT_F {
+                    right: rectangle.w,
+                    bottom: rectangle.h,
+                    ..Default::default()
+                },
+                brush,
+            );
+        }
+    }
+
     pub fn draw(&mut self, game: &Game) {
-        self.draw_entity(&game.ball);
-        self.draw_entity(&game.left_paddle);
-        self.draw_entity(&game.right_paddle);
-        self.draw_entity(&game.top_wall);
-        self.draw_entity(&game.bottom_wall);
+        self.draw_rectangle(&game.ball);
+        self.draw_rectangle(&game.ball);
+        self.draw_rectangle(&game.left_paddle);
+        self.draw_rectangle(&game.right_paddle);
+        self.draw_rectangle(&game.top_wall);
+        self.draw_rectangle(&game.bottom_wall);
         self.draw_entity(&game.left_score);
         self.draw_entity(&game.right_score);
     }
@@ -195,7 +214,6 @@ fn create_text_format() -> IDWriteTextFormat {
 }
 
 pub enum Geometry {
-    Rectangle { w: f32, h: f32 },
     Text { text: Vec<u16> },
 }
 
@@ -205,16 +223,6 @@ impl Geometry {
             let brush = graphics.brush.as_ref().unwrap();
             let ctx = graphics.target.as_ref().unwrap();
             match self {
-                Geometry::Rectangle { w, h } => {
-                    ctx.FillRectangle(
-                        &D2D_RECT_F {
-                            right: *w,
-                            bottom: *h,
-                            ..Default::default()
-                        },
-                        brush,
-                    );
-                }
                 Geometry::Text { text } => ctx.DrawText(
                     text,
                     &graphics.text_format,

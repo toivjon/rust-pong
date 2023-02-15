@@ -7,6 +7,7 @@ use windows::Win32::UI::WindowsAndMessaging::*;
 
 mod app;
 mod game;
+mod geometry;
 mod graphics;
 
 fn main() -> Result<()> {
