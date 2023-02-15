@@ -11,6 +11,7 @@ use crate::graphics::Geometry;
 /// A constant for the paddle movement velocity.
 const PADDLE_VELOCITY: f32 = 0.001;
 
+/// A constant for the ball movement velocity.
 const BALL_VELOCITY: f32 = 0.0003;
 
 pub struct Game {
