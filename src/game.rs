@@ -17,6 +17,9 @@ const BALL_VELOCITY: f32 = 0.0003;
 /// The duration of the countdown at the beginning of each round.
 const COUNTDOWN: Duration = Duration::from_secs(1);
 
+/// The amount of additional push added to collision handling.
+const NUDGE: f32 = 0.001;
+
 pub struct Game {
     pub ball: Entity,
     pub left_paddle: Entity,
@@ -118,13 +121,13 @@ impl Game {
 
         // reflect ball Y-movement if it hits the bottom wall.
         if self.bottom_wall.pos.Y <= (self.ball.pos.Y + 0.0325) {
-            self.ball.pos.Y = self.bottom_wall.pos.Y - 0.0325 - 0.001; // nudge
+            self.ball.pos.Y = self.bottom_wall.pos.Y - 0.0325 - NUDGE;
             self.ball_y_movement = -self.ball_y_movement;
         }
 
         // reflect ball Y-movement if it hits the top wall.
         if (self.top_wall.pos.Y + 0.03) >= self.ball.pos.Y {
-            self.ball.pos.Y = self.top_wall.pos.Y + 0.03 + 0.001; // nudge
+            self.ball.pos.Y = self.top_wall.pos.Y + 0.03 + NUDGE;
             self.ball_y_movement = -self.ball_y_movement;
         }
 
@@ -152,7 +155,7 @@ impl Game {
                 Y: 0.0325,
             },
         ) {
-            self.ball.pos.X = self.left_paddle.pos.X + 0.025 + 0.001; // nudge
+            self.ball.pos.X = self.left_paddle.pos.X + 0.025 + NUDGE;
             self.ball_x_movement = -self.ball_x_movement;
         }
 
@@ -166,7 +169,7 @@ impl Game {
                 Y: 0.0325,
             },
         ) {
-            self.ball.pos.X = self.right_paddle.pos.X - 0.025 - 0.001; // nudge
+            self.ball.pos.X = self.right_paddle.pos.X - 0.025 - NUDGE;
             self.ball_x_movement = -self.ball_x_movement;
         }
 
