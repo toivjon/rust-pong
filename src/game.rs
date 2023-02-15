@@ -3,7 +3,10 @@ use std::time::Duration;
 use windows::Win32::UI::Input::KeyboardAndMouse::*;
 use windows::{w, Foundation::Numerics::Vector2};
 
-use crate::graphics::{Geometry, Rectangle, Text};
+use crate::graphics::Geometry::Rectangle;
+use crate::graphics::Geometry::Text;
+
+use crate::graphics::Geometry;
 
 /// A constant for the paddle movement velocity.
 const PADDLE_VELOCITY: f32 = 0.001;
@@ -30,6 +33,7 @@ pub struct Game {
 
 struct Player {
     y_movement: f32,
+    points: u8,
 }
 
 impl Game {
@@ -37,52 +41,58 @@ impl Game {
         Game {
             ball: Entity {
                 pos: Vector2 { X: 0.5, Y: 0.5 },
-                geo: Box::new(Rectangle {
+                geo: Rectangle {
                     w: 0.025,
                     h: 0.0325,
-                }),
+                },
             },
             left_paddle: Entity {
                 pos: Vector2 {
                     X: 0.05,
                     Y: 0.5 - 0.075,
                 },
-                geo: Box::new(Rectangle { w: 0.025, h: 0.15 }),
+                geo: Rectangle { w: 0.025, h: 0.15 },
             },
             right_paddle: Entity {
                 pos: Vector2 {
                     X: 1.0 - 0.025 - 0.05,
                     Y: 0.5 - (0.15 / 2.0),
                 },
-                geo: Box::new(Rectangle { w: 0.025, h: 0.15 }),
+                geo: Rectangle { w: 0.025, h: 0.15 },
             },
             top_wall: Entity {
                 pos: Vector2 { X: 0.0, Y: 0.0 },
-                geo: Box::new(Rectangle { w: 1.0, h: 0.03 }),
+                geo: Rectangle { w: 1.0, h: 0.03 },
             },
             bottom_wall: Entity {
                 pos: Vector2 {
                     X: 0.0,
                     Y: 1.0 - 0.03,
                 },
-                geo: Box::new(Rectangle { w: 1.0, h: 0.03 }),
+                geo: Rectangle { w: 1.0, h: 0.03 },
             },
             left_score: Entity {
                 pos: Vector2 { X: 0.35, Y: 0.15 },
-                geo: Box::new(Text {
+                geo: Text {
                     text: unsafe { w!("0").as_wide().to_vec() },
-                }),
+                },
             },
             right_score: Entity {
                 pos: Vector2 { X: 0.65, Y: 0.15 },
-                geo: Box::new(Text {
+                geo: Text {
                     text: unsafe { w!("0").as_wide().to_vec() },
-                }),
+                },
             },
             ball_x_movement: 1.0,
             ball_y_movement: -1.0,
-            left_player: Player { y_movement: 0.0 },
-            right_player: Player { y_movement: 0.0 },
+            left_player: Player {
+                y_movement: 0.0,
+                points: 0,
+            },
+            right_player: Player {
+                y_movement: 0.0,
+                points: 0,
+            },
             countdown: Duration::from_secs(1),
         }
     }
@@ -159,13 +169,30 @@ impl Game {
         // Check whether ball hits the left goal.
         if self.ball.pos.X <= 0.0 {
             self.clear_state();
-            // TODO increment points.
+            self.right_player.points = u8::min(9, self.right_player.points + 1);
+            // TODO check if game is over?
+            let boom: Vec<u16> = self
+                .right_player
+                .points
+                .to_string()
+                .encode_utf16()
+                .collect();
+            match &mut self.right_score.geo {
+                Geometry::Text { text } => *text = boom,
+                _ => (),
+            }
         }
 
         // Check whether ball hits the right goal.
         if (self.ball.pos.X + 0.025) >= 1.0 {
             self.clear_state();
-            // TODO increment points.
+            self.left_player.points = u8::min(9, self.left_player.points + 1);
+            // TODO check if game is over?
+            let boom: Vec<u16> = self.left_player.points.to_string().encode_utf16().collect();
+            match &mut self.left_score.geo {
+                Geometry::Text { text } => *text = boom,
+                _ => (),
+            }
         }
     }
 
@@ -225,5 +252,5 @@ impl Game {
 /// An object representing a single item in the game world.
 pub struct Entity {
     pub pos: Vector2,
-    pub geo: Box<dyn Geometry>,
+    pub geo: Geometry,
 }

@@ -189,47 +189,36 @@ fn create_text_format() -> IDWriteTextFormat {
     }
 }
 
-pub trait Geometry {
-    fn draw(&self, graphics: &Graphics);
+pub enum Geometry {
+    Rectangle { w: f32, h: f32 },
+    Text { text: Vec<u16> },
 }
 
-pub struct Rectangle {
-    pub w: f32,
-    pub h: f32,
-}
-
-impl Geometry for Rectangle {
-    fn draw(&self, graphics: &Graphics) {
+impl Geometry {
+    pub fn draw(&self, graphics: &Graphics) {
         unsafe {
-            graphics.target.as_ref().unwrap().FillRectangle(
-                &D2D_RECT_F {
-                    right: self.w,
-                    bottom: self.h,
-                    ..Default::default()
-                },
-                graphics.brush.as_ref().unwrap(),
-            )
-        }
-    }
-}
-
-pub struct Text {
-    pub text: Vec<u16>,
-}
-
-impl Geometry for Text {
-    fn draw(&self, graphics: &Graphics) {
-        let ctx = graphics.target.as_ref().unwrap();
-        let brush = graphics.brush.as_ref().unwrap();
-        unsafe {
-            ctx.DrawText(
-                &self.text,
-                &graphics.text_format,
-                &D2D_RECT_F::default(),
-                brush,
-                D2D1_DRAW_TEXT_OPTIONS_NONE,
-                DWRITE_MEASURING_MODE_NATURAL,
-            )
+            let brush = graphics.brush.as_ref().unwrap();
+            let ctx = graphics.target.as_ref().unwrap();
+            match self {
+                Geometry::Rectangle { w, h } => {
+                    ctx.FillRectangle(
+                        &D2D_RECT_F {
+                            right: *w,
+                            bottom: *h,
+                            ..Default::default()
+                        },
+                        brush,
+                    );
+                }
+                Geometry::Text { text } => ctx.DrawText(
+                    &text,
+                    &graphics.text_format,
+                    &D2D_RECT_F::default(),
+                    brush,
+                    D2D1_DRAW_TEXT_OPTIONS_NONE,
+                    DWRITE_MEASURING_MODE_NATURAL,
+                ),
+            }
         }
     }
 }
