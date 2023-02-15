@@ -224,26 +224,10 @@ impl Game {
 
     pub fn on_key_up(&mut self, key: u16) {
         match VIRTUAL_KEY(key) {
-            VK_UP => {
-                if self.right_player.y_movement < 0.0 {
-                    self.right_player.y_movement = 0.0;
-                }
-            }
-            VK_DOWN => {
-                if self.right_player.y_movement > 0.0 {
-                    self.right_player.y_movement = 0.0;
-                }
-            }
-            VK_W => {
-                if self.left_player.y_movement < 0.0 {
-                    self.left_player.y_movement = 0.0;
-                }
-            }
-            VK_S => {
-                if self.left_player.y_movement > 0.0 {
-                    self.left_player.y_movement = 0.0;
-                }
-            }
+            VK_UP => self.right_player.y_movement = f32::max(self.right_player.y_movement, 0.0),
+            VK_DOWN => self.right_player.y_movement = f32::min(self.right_player.y_movement, 0.0),
+            VK_W => self.left_player.y_movement = f32::max(self.left_player.y_movement, 0.0),
+            VK_S => self.left_player.y_movement = f32::min(self.left_player.y_movement, 0.0),
             _ => (),
         }
     }
