@@ -44,6 +44,9 @@ impl App {
     }
 
     pub fn draw(&mut self) -> Result<()> {
-        self.graphics.draw(&self.game)
+        self.graphics.begin_draw()?;
+        self.graphics.draw(&self.game);
+        self.graphics.end_draw();
+        Ok(())
     }
 }

@@ -34,7 +34,7 @@ impl Graphics {
         })
     }
 
-    pub fn draw(&mut self, game: &Game) -> Result<()> {
+    pub fn begin_draw(&mut self) -> Result<()> {
         if self.target.is_none() {
             self.create_target()?;
         }
@@ -42,28 +42,33 @@ impl Graphics {
         unsafe {
             ctx.BeginDraw();
             ctx.Clear(Some(&D2D1_COLOR_F::default()));
-
-            self.draw_entity(&game.ball);
-            self.draw_entity(&game.left_paddle);
-            self.draw_entity(&game.right_paddle);
-            self.draw_entity(&game.top_wall);
-            self.draw_entity(&game.bottom_wall);
-            self.draw_entity(&game.left_score);
-            self.draw_entity(&game.right_score);
-
-            if let Err(error) = ctx.EndDraw(None, None) {
-                if error.code() == D2DERR_RECREATE_TARGET {
-                    self.release_target();
-                }
-            }
         }
         Ok(())
     }
 
-    unsafe fn draw_entity(&self, entity: &Entity) {
+    pub fn draw(&mut self, game: &Game) {
+        self.draw_entity(&game.ball);
+        self.draw_entity(&game.left_paddle);
+        self.draw_entity(&game.right_paddle);
+        self.draw_entity(&game.top_wall);
+        self.draw_entity(&game.bottom_wall);
+        self.draw_entity(&game.left_score);
+        self.draw_entity(&game.right_score);
+    }
+
+    pub fn end_draw(&mut self) {
+        let ctx = self.target.as_ref().unwrap();
+        if let Err(error) = unsafe { ctx.EndDraw(None, None) } {
+            if error.code() == D2DERR_RECREATE_TARGET {
+                self.release_target();
+            }
+        }
+    }
+
+    fn draw_entity(&self, entity: &Entity) {
         let ctx = self.target.as_ref().unwrap();
         let transform = Matrix3x2::translation(entity.pos.X, entity.pos.Y);
-        ctx.SetTransform(&(transform * self.transform));
+        unsafe { ctx.SetTransform(&(transform * self.transform)) };
         entity.geo.draw(self);
     }
 
