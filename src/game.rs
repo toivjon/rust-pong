@@ -102,13 +102,13 @@ impl Game {
     }
 
     pub fn tick(&mut self, dt: Duration) {
-        let millis = dt.as_millis();
-
         // Skip physics if countdown is still in progress.
         self.countdown -= Duration::min(self.countdown, dt);
         if !self.countdown.is_zero() {
             return;
         }
+
+        let millis = dt.as_millis();
 
         self.right_paddle.pos.Y += self.right_player.movement * PADDLE_VELOCITY * millis as f32;
         self.left_paddle.pos.Y += self.left_player.movement * PADDLE_VELOCITY * millis as f32;
