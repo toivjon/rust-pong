@@ -184,10 +184,9 @@ impl Game {
                 .to_string()
                 .encode_utf16()
                 .collect();
-            match &mut self.right_score.geo {
-                Geometry::Text { text } => *text = boom,
-                _ => (),
-            }
+            if let Geometry::Text { text } = &mut self.right_score.geo {
+                *text = boom
+            };
         }
 
         // Check whether ball hits the right goal.
@@ -196,10 +195,9 @@ impl Game {
             self.left_player.points = u8::min(9, self.left_player.points + 1);
             // TODO check if game is over?
             let boom: Vec<u16> = self.left_player.points.to_string().encode_utf16().collect();
-            match &mut self.left_score.geo {
-                Geometry::Text { text } => *text = boom,
-                _ => (),
-            }
+            if let Geometry::Text { text } = &mut self.left_score.geo {
+                *text = boom
+            };
         }
     }
 
