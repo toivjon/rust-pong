@@ -211,7 +211,7 @@ impl Geometry {
                     );
                 }
                 Geometry::Text { text } => ctx.DrawText(
-                    &text,
+                    text,
                     &graphics.text_format,
                     &D2D_RECT_F::default(),
                     brush,
