@@ -32,7 +32,7 @@ pub struct Game {
 }
 
 struct Player {
-    y_movement: f32,
+    movement: f32,
     points: u8,
 }
 
@@ -86,11 +86,11 @@ impl Game {
             ball_x_movement: 1.0,
             ball_y_movement: -1.0,
             left_player: Player {
-                y_movement: 0.0,
+                movement: 0.0,
                 points: 0,
             },
             right_player: Player {
-                y_movement: 0.0,
+                movement: 0.0,
                 points: 0,
             },
             countdown: Duration::from_secs(1),
@@ -106,8 +106,8 @@ impl Game {
             return;
         }
 
-        self.right_paddle.pos.Y += self.right_player.y_movement * PADDLE_VELOCITY * millis as f32;
-        self.left_paddle.pos.Y += self.left_player.y_movement * PADDLE_VELOCITY * millis as f32;
+        self.right_paddle.pos.Y += self.right_player.movement * PADDLE_VELOCITY * millis as f32;
+        self.left_paddle.pos.Y += self.left_player.movement * PADDLE_VELOCITY * millis as f32;
 
         self.ball.pos.Y += self.ball_y_movement * BALL_VELOCITY * millis as f32;
         self.ball.pos.X += self.ball_x_movement * BALL_VELOCITY * millis as f32;
@@ -214,20 +214,20 @@ impl Game {
 
     pub fn on_key_down(&mut self, key: u16) {
         match VIRTUAL_KEY(key) {
-            VK_UP => self.right_player.y_movement = -1.0,
-            VK_DOWN => self.right_player.y_movement = 1.0,
-            VK_W => self.left_player.y_movement = -1.0,
-            VK_S => self.left_player.y_movement = 1.0,
+            VK_UP => self.right_player.movement = -1.0,
+            VK_DOWN => self.right_player.movement = 1.0,
+            VK_W => self.left_player.movement = -1.0,
+            VK_S => self.left_player.movement = 1.0,
             _ => (),
         }
     }
 
     pub fn on_key_up(&mut self, key: u16) {
         match VIRTUAL_KEY(key) {
-            VK_UP => self.right_player.y_movement = f32::max(self.right_player.y_movement, 0.0),
-            VK_DOWN => self.right_player.y_movement = f32::min(self.right_player.y_movement, 0.0),
-            VK_W => self.left_player.y_movement = f32::max(self.left_player.y_movement, 0.0),
-            VK_S => self.left_player.y_movement = f32::min(self.left_player.y_movement, 0.0),
+            VK_UP => self.right_player.movement = f32::max(self.right_player.movement, 0.0),
+            VK_DOWN => self.right_player.movement = f32::min(self.right_player.movement, 0.0),
+            VK_W => self.left_player.movement = f32::max(self.left_player.movement, 0.0),
+            VK_S => self.left_player.movement = f32::min(self.left_player.movement, 0.0),
             _ => (),
         }
     }
