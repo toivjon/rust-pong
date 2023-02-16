@@ -142,19 +142,12 @@ impl Game {
             self.clear_state();
             self.right_player.points = u8::min(9, self.right_player.points + 1);
             // TODO check if game is over?
-            let boom: Vec<u16> = self
-                .right_player
-                .points
-                .to_string()
-                .encode_utf16()
-                .collect();
-            self.right_score.text = boom;
+            self.right_score.set_text(self.right_player.points)
         } else if (self.ball.x + self.ball.w) >= 1.0 {
             self.clear_state();
             self.left_player.points = u8::min(9, self.left_player.points + 1);
             // TODO check if game is over?
-            let boom: Vec<u16> = self.left_player.points.to_string().encode_utf16().collect();
-            self.left_score.text = boom;
+            self.left_score.set_text(self.left_player.points)
         }
     }
 

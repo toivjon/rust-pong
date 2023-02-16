@@ -22,3 +22,10 @@ pub struct Text {
     pub y: f32,
     pub text: Vec<u16>,
 }
+
+impl Text {
+    /// Set the to_string result of the given value as the textual content.
+    pub fn set_text<T: ToString>(&mut self, val: T) {
+        self.text = val.to_string().encode_utf16().collect()
+    }
+}
