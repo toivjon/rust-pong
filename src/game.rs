@@ -2,7 +2,10 @@ use std::time::Duration;
 
 use windows::Win32::UI::Input::KeyboardAndMouse::*;
 
-use crate::geometry::{Rectangle, Text};
+use crate::{
+    geometry::{Rectangle, Text},
+    graphics::Graphics,
+};
 
 /// A constant for the paddle movement velocity.
 const PADDLE_VELOCITY: f32 = 0.001;
@@ -148,6 +151,18 @@ impl Game {
             // TODO check if game is over?
             self.left_score.set_text(self.left_player.points)
         }
+    }
+
+    /// Draw the visible game world entities.
+    pub fn draw(&self, ctx: &Graphics) {
+        ctx.draw_rectangle(&self.ball);
+        ctx.draw_rectangle(&self.ball);
+        ctx.draw_rectangle(&self.left_paddle);
+        ctx.draw_rectangle(&self.right_paddle);
+        ctx.draw_rectangle(&self.top_wall);
+        ctx.draw_rectangle(&self.bottom_wall);
+        ctx.draw_text(&self.left_score);
+        ctx.draw_text(&self.right_score);
     }
 
     /// Apply the movement for all dynamic entities based on the provided delta time.

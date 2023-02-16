@@ -7,7 +7,6 @@ use windows::Win32::Graphics::Direct2D::*;
 use windows::Win32::Graphics::DirectWrite::*;
 use windows::Win32::UI::WindowsAndMessaging::GetClientRect;
 
-use crate::game::Game;
 use crate::geometry::{Rectangle, Text};
 
 /// A constant for the view aspect ratio.
@@ -79,17 +78,6 @@ impl Graphics {
                 DWRITE_MEASURING_MODE_NATURAL,
             )
         }
-    }
-
-    pub fn draw(&mut self, game: &Game) {
-        self.draw_rectangle(&game.ball);
-        self.draw_rectangle(&game.ball);
-        self.draw_rectangle(&game.left_paddle);
-        self.draw_rectangle(&game.right_paddle);
-        self.draw_rectangle(&game.top_wall);
-        self.draw_rectangle(&game.bottom_wall);
-        self.draw_text(&game.left_score);
-        self.draw_text(&game.right_score);
     }
 
     pub fn end_draw(&mut self) {
