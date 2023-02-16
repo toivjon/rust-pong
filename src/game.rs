@@ -114,6 +114,15 @@ impl Game {
             self.ball_y_movement = -self.ball_y_movement;
         }
 
+        // reflect ball X-movement if it hits the paddles.
+        if Self::collides(&self.left_paddle, &self.ball) {
+            self.ball.x = self.left_paddle.x + self.left_paddle.w + NUDGE;
+            self.ball_x_movement = -self.ball_x_movement;
+        } else if Self::collides(&self.right_paddle, &self.ball) {
+            self.ball.x = self.right_paddle.x - self.ball.w - NUDGE;
+            self.ball_x_movement = -self.ball_x_movement;
+        }
+
         // don't let right paddle to go out of wall limits
         if self.right_paddle.y < 0.03 {
             self.right_paddle.y = 0.03;
@@ -126,15 +135,6 @@ impl Game {
             self.left_paddle.y = 0.03;
         } else if self.left_paddle.y > (1.0 - 0.03 - 0.15) {
             self.left_paddle.y = 1.0 - 0.03 - 0.15;
-        }
-
-        // reflect ball X-movement if it hits the paddles.
-        if Self::collides(&self.left_paddle, &self.ball) {
-            self.ball.x = self.left_paddle.x + self.left_paddle.w + NUDGE;
-            self.ball_x_movement = -self.ball_x_movement;
-        } else if Self::collides(&self.right_paddle, &self.ball) {
-            self.ball.x = self.right_paddle.x - self.ball.w - NUDGE;
-            self.ball_x_movement = -self.ball_x_movement;
         }
 
         // Check whether ball hits the left goal.
