@@ -137,7 +137,7 @@ impl Game {
             self.ball_x_movement = -self.ball_x_movement;
         }
 
-        // Check whether ball hits the left goal.
+        // Check whether ball hits the goals.
         if self.ball.x <= 0.0 {
             self.clear_state();
             self.right_player.points = u8::min(9, self.right_player.points + 1);
@@ -149,10 +149,7 @@ impl Game {
                 .encode_utf16()
                 .collect();
             self.right_score.text = boom;
-        }
-
-        // Check whether ball hits the right goal.
-        if (self.ball.x + 0.025) >= 1.0 {
+        } else if (self.ball.x + self.ball.w) >= 1.0 {
             self.clear_state();
             self.left_player.points = u8::min(9, self.left_player.points + 1);
             // TODO check if game is over?
