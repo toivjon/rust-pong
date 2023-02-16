@@ -171,8 +171,8 @@ impl Game {
     fn clear_state(&mut self) {
         self.ball.x = 0.5 - (self.ball.w / 2.0);
         self.ball.y = 0.5 - (self.ball.h / 2.0);
-        self.left_paddle.y = 0.425;
-        self.right_paddle.y = 0.425;
+        self.left_paddle.y = 0.5 - (self.left_paddle.h / 2.0);
+        self.right_paddle.y = 0.5 - (self.right_paddle.h / 2.0);
         self.countdown = COUNTDOWN;
     }
 
