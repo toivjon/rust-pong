@@ -1,6 +1,5 @@
 use std::time::Duration;
 
-use windows::w;
 use windows::Win32::UI::Input::KeyboardAndMouse::*;
 
 use crate::geometry::{Rectangle, Text};
@@ -76,12 +75,12 @@ impl Game {
             left_score: Text {
                 x: 0.35,
                 y: 0.15,
-                text: unsafe { w!("0").as_wide().to_vec() },
+                text: "0".encode_utf16().collect(),
             },
             right_score: Text {
                 x: 0.65,
                 y: 0.15,
-                text: unsafe { w!("0").as_wide().to_vec() },
+                text: "0".encode_utf16().collect(),
             },
             ball_x_movement: 1.0,
             ball_y_movement: -1.0,
