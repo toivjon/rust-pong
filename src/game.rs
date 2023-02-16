@@ -106,17 +106,17 @@ impl Game {
         self.apply_movement(dt);
 
         // don't let right paddle to go out of wall limits
-        if self.right_paddle.y < 0.03 {
-            self.right_paddle.y = 0.03;
-        } else if self.right_paddle.y > (1.0 - 0.03 - 0.15) {
-            self.right_paddle.y = 1.0 - 0.03 - 0.15;
+        if Self::collides(&self.right_paddle, &self.top_wall) {
+            self.right_paddle.y = self.top_wall.y + self.top_wall.h + NUDGE;
+        } else if Self::collides(&self.right_paddle, &self.bottom_wall) {
+            self.right_paddle.y = self.bottom_wall.y - self.right_paddle.h - NUDGE;
         }
 
         // don't let left paddle to go out of wall limits
-        if self.left_paddle.y < 0.03 {
-            self.left_paddle.y = 0.03;
-        } else if self.left_paddle.y > (1.0 - 0.03 - 0.15) {
-            self.left_paddle.y = 1.0 - 0.03 - 0.15;
+        if Self::collides(&self.left_paddle, &self.top_wall) {
+            self.left_paddle.y = self.top_wall.y + self.top_wall.h + NUDGE;
+        } else if Self::collides(&self.left_paddle, &self.bottom_wall) {
+            self.left_paddle.y = self.bottom_wall.y - self.left_paddle.h - NUDGE;
         }
 
         // reflect ball Y-movement if it hits the walls.
