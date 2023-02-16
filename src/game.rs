@@ -106,33 +106,33 @@ impl Game {
         self.apply_movement(dt);
 
         // don't let right paddle to go out of wall limits
-        if Self::collides(&self.right_paddle, &self.top_wall) {
+        if self.right_paddle.collides(&self.top_wall) {
             self.right_paddle.y = self.top_wall.y + self.top_wall.h + NUDGE;
-        } else if Self::collides(&self.right_paddle, &self.bottom_wall) {
+        } else if self.right_paddle.collides(&self.bottom_wall) {
             self.right_paddle.y = self.bottom_wall.y - self.right_paddle.h - NUDGE;
         }
 
         // don't let left paddle to go out of wall limits
-        if Self::collides(&self.left_paddle, &self.top_wall) {
+        if self.left_paddle.collides(&self.top_wall) {
             self.left_paddle.y = self.top_wall.y + self.top_wall.h + NUDGE;
-        } else if Self::collides(&self.left_paddle, &self.bottom_wall) {
+        } else if self.left_paddle.collides(&self.bottom_wall) {
             self.left_paddle.y = self.bottom_wall.y - self.left_paddle.h - NUDGE;
         }
 
         // reflect ball Y-movement if it hits the walls.
-        if Self::collides(&self.bottom_wall, &self.ball) {
+        if self.bottom_wall.collides(&self.ball) {
             self.ball.y = self.bottom_wall.y - self.ball.h - NUDGE;
             self.ball_y_movement = -self.ball_y_movement;
-        } else if Self::collides(&self.top_wall, &self.ball) {
+        } else if self.top_wall.collides(&self.ball) {
             self.ball.y = self.top_wall.y + self.top_wall.h + NUDGE;
             self.ball_y_movement = -self.ball_y_movement;
         }
 
         // reflect ball X-movement if it hits the paddles.
-        if Self::collides(&self.left_paddle, &self.ball) {
+        if self.left_paddle.collides(&self.ball) {
             self.ball.x = self.left_paddle.x + self.left_paddle.w + NUDGE;
             self.ball_x_movement = -self.ball_x_movement;
-        } else if Self::collides(&self.right_paddle, &self.ball) {
+        } else if self.right_paddle.collides(&self.ball) {
             self.ball.x = self.right_paddle.x - self.ball.w - NUDGE;
             self.ball_x_movement = -self.ball_x_movement;
         }
@@ -174,10 +174,6 @@ impl Game {
         self.left_paddle.y = 0.5 - (self.left_paddle.h / 2.0);
         self.right_paddle.y = 0.5 - (self.right_paddle.h / 2.0);
         self.countdown = COUNTDOWN;
-    }
-
-    fn collides(a: &Rectangle, b: &Rectangle) -> bool {
-        a.x < (b.x + b.w) && a.y < (b.y + b.h) && (a.x + a.w) > b.x && (a.y + a.h) > b.y
     }
 
     pub fn on_key_down(&mut self, key: u16) {
