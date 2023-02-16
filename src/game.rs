@@ -3,6 +3,7 @@ use std::time::Duration;
 use windows::Win32::UI::Input::KeyboardAndMouse::*;
 
 use crate::{
+    app::Scene,
     geometry::{Rectangle, Text},
     graphics::Graphics,
 };
@@ -99,7 +100,27 @@ impl Game {
         }
     }
 
-    pub fn tick(&mut self, dt: Duration) {
+    /// Apply the movement for all dynamic entities based on the provided delta time.
+    fn apply_movement(&mut self, dt: Duration) {
+        let millis = dt.as_millis() as f32;
+        self.right_paddle.y += self.right_player.movement * PADDLE_VELOCITY * millis;
+        self.left_paddle.y += self.left_player.movement * PADDLE_VELOCITY * millis;
+        self.ball.y += self.ball_y_movement * BALL_VELOCITY * millis;
+        self.ball.x += self.ball_x_movement * BALL_VELOCITY * millis;
+    }
+
+    /// Clear the gameyard state by centering the ball and paddles and starting a new countdown.
+    fn clear_state(&mut self) {
+        self.ball.x = 0.5 - (self.ball.w / 2.0);
+        self.ball.y = 0.5 - (self.ball.h / 2.0);
+        self.left_paddle.y = 0.5 - (self.left_paddle.h / 2.0);
+        self.right_paddle.y = 0.5 - (self.right_paddle.h / 2.0);
+        self.countdown = COUNTDOWN;
+    }
+}
+
+impl Scene for Game {
+    fn tick(&mut self, dt: Duration) {
         // Skip physics if countdown is still in progress.
         self.countdown -= Duration::min(self.countdown, dt);
         if !self.countdown.is_zero() {
@@ -154,7 +175,7 @@ impl Game {
     }
 
     /// Draw the visible game world entities.
-    pub fn draw(&self, ctx: &Graphics) {
+    fn draw(&self, ctx: &Graphics) {
         ctx.draw_rectangle(&self.ball);
         ctx.draw_rectangle(&self.ball);
         ctx.draw_rectangle(&self.left_paddle);
@@ -165,25 +186,7 @@ impl Game {
         ctx.draw_text(&self.right_score);
     }
 
-    /// Apply the movement for all dynamic entities based on the provided delta time.
-    fn apply_movement(&mut self, dt: Duration) {
-        let millis = dt.as_millis() as f32;
-        self.right_paddle.y += self.right_player.movement * PADDLE_VELOCITY * millis;
-        self.left_paddle.y += self.left_player.movement * PADDLE_VELOCITY * millis;
-        self.ball.y += self.ball_y_movement * BALL_VELOCITY * millis;
-        self.ball.x += self.ball_x_movement * BALL_VELOCITY * millis;
-    }
-
-    /// Clear the gameyard state by centering the ball and paddles and starting a new countdown.
-    fn clear_state(&mut self) {
-        self.ball.x = 0.5 - (self.ball.w / 2.0);
-        self.ball.y = 0.5 - (self.ball.h / 2.0);
-        self.left_paddle.y = 0.5 - (self.left_paddle.h / 2.0);
-        self.right_paddle.y = 0.5 - (self.right_paddle.h / 2.0);
-        self.countdown = COUNTDOWN;
-    }
-
-    pub fn on_key_down(&mut self, key: u16) {
+    fn on_key_down(&mut self, key: u16) {
         match VIRTUAL_KEY(key) {
             VK_UP => self.right_player.movement = -1.0,
             VK_DOWN => self.right_player.movement = 1.0,
@@ -193,7 +196,7 @@ impl Game {
         }
     }
 
-    pub fn on_key_up(&mut self, key: u16) {
+    fn on_key_up(&mut self, key: u16) {
         match VIRTUAL_KEY(key) {
             VK_UP => self.right_player.movement = f32::max(self.right_player.movement, 0.0),
             VK_DOWN => self.right_player.movement = f32::min(self.right_player.movement, 0.0),
