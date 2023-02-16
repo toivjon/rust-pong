@@ -105,15 +105,12 @@ impl Game {
         }
         self.apply_movement(dt);
 
-        // reflect ball Y-movement if it hits the bottom wall.
-        if self.bottom_wall.y <= (self.ball.y + 0.0325) {
-            self.ball.y = self.bottom_wall.y - 0.0325 - NUDGE;
+        // reflect ball Y-movement if it hits the walls.
+        if Self::collides(&self.bottom_wall, &self.ball) {
+            self.ball.y = self.bottom_wall.y - self.ball.h - NUDGE;
             self.ball_y_movement = -self.ball_y_movement;
-        }
-
-        // reflect ball Y-movement if it hits the top wall.
-        if (self.top_wall.y + 0.03) >= self.ball.y {
-            self.ball.y = self.top_wall.y + 0.03 + NUDGE;
+        } else if Self::collides(&self.top_wall, &self.ball) {
+            self.ball.y = self.top_wall.y + self.top_wall.h + NUDGE;
             self.ball_y_movement = -self.ball_y_movement;
         }
 
@@ -131,15 +128,12 @@ impl Game {
             self.left_paddle.y = 1.0 - 0.03 - 0.15;
         }
 
-        // reflect ball X-movement if it hits the left paddle.
+        // reflect ball X-movement if it hits the paddles.
         if Self::collides(&self.left_paddle, &self.ball) {
-            self.ball.x = self.left_paddle.x + 0.025 + NUDGE;
+            self.ball.x = self.left_paddle.x + self.left_paddle.w + NUDGE;
             self.ball_x_movement = -self.ball_x_movement;
-        }
-
-        // reflect ball X-movement if it hits the right paddle.
-        if Self::collides(&self.right_paddle, &self.ball) {
-            self.ball.x = self.right_paddle.x - 0.025 - NUDGE;
+        } else if Self::collides(&self.right_paddle, &self.ball) {
+            self.ball.x = self.right_paddle.x - self.ball.w - NUDGE;
             self.ball_x_movement = -self.ball_x_movement;
         }
 
