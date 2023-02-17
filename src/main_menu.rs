@@ -3,7 +3,7 @@ use std::time::Duration;
 use windows::Win32::UI::Input::KeyboardAndMouse::{VIRTUAL_KEY, VK_DOWN, VK_RETURN, VK_UP};
 
 use crate::{
-    app::{App, Scene},
+    app::Scene,
     game::Game,
     geometry::{Rectangle, Text},
     graphics::Graphics,
