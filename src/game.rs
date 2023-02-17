@@ -80,11 +80,13 @@ impl Game {
                 x: 0.35,
                 y: 0.15,
                 text: "0".encode_utf16().collect(),
+                big: true,
             },
             right_score: Text {
                 x: 0.65,
                 y: 0.15,
                 text: "0".encode_utf16().collect(),
+                big: true,
             },
             ball_x_movement: 1.0,
             ball_y_movement: -1.0,
@@ -120,11 +122,11 @@ impl Game {
 }
 
 impl Scene for Game {
-    fn tick(&mut self, dt: Duration) {
+    fn tick(&mut self, dt: Duration) -> Option<Box<dyn Scene>> {
         // Skip physics if countdown is still in progress.
         self.countdown -= Duration::min(self.countdown, dt);
         if !self.countdown.is_zero() {
-            return;
+            return None;
         }
         self.apply_movement(dt);
 
@@ -165,13 +167,14 @@ impl Scene for Game {
             self.clear_state();
             self.right_player.points = u8::min(9, self.right_player.points + 1);
             // TODO check if game is over?
-            self.right_score.set_text(self.right_player.points)
+            self.right_score.set_text(self.right_player.points);
         } else if (self.ball.x + self.ball.w) >= 1.0 {
             self.clear_state();
             self.left_player.points = u8::min(9, self.left_player.points + 1);
             // TODO check if game is over?
-            self.left_score.set_text(self.left_player.points)
+            self.left_score.set_text(self.left_player.points);
         }
+        None
     }
 
     /// Draw the visible game world entities.

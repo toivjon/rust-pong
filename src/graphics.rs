@@ -19,7 +19,8 @@ pub struct Graphics {
     target: Option<ID2D1HwndRenderTarget>,
     brush: Option<ID2D1SolidColorBrush>,
     transform: Matrix3x2,
-    text_format: IDWriteTextFormat,
+    big_text_format: IDWriteTextFormat,
+    small_text_format: IDWriteTextFormat,
 }
 
 impl Graphics {
@@ -30,7 +31,8 @@ impl Graphics {
             target: None,
             brush: None,
             transform: create_aspect_transform(hwnd),
-            text_format: create_text_format(),
+            big_text_format: create_text_format(0.2),
+            small_text_format: create_text_format(0.1),
         })
     }
 
@@ -66,12 +68,16 @@ impl Graphics {
     pub fn draw_text(&self, text: &Text) {
         let ctx = self.target.as_ref().unwrap();
         let brush = self.brush.as_ref().unwrap();
+        let format = match text.big {
+            true => &self.big_text_format,
+            false => &self.small_text_format,
+        };
         unsafe {
             let transform = Matrix3x2::translation(text.x, text.y);
             ctx.SetTransform(&(transform * self.transform));
             ctx.DrawText(
                 &text.text,
-                &self.text_format,
+                format,
                 &D2D_RECT_F::default(),
                 brush,
                 D2D1_DRAW_TEXT_OPTIONS_NONE,
@@ -183,18 +189,18 @@ fn create_aspect_transform(hwnd: HWND) -> Matrix3x2 {
     scale * translation
 }
 
-/// Create the text format used to draw texts on the buffer.
-fn create_text_format() -> IDWriteTextFormat {
+/// Create the big text format used to draw large texts on the buffer.
+fn create_text_format(size: f32) -> IDWriteTextFormat {
     unsafe {
         let factory: IDWriteFactory3 = DWriteCreateFactory(DWRITE_FACTORY_TYPE_SHARED).unwrap();
         let text_format = factory
             .CreateTextFormat(
-                w!("Arial"),
+                w!("Calibri"),
                 None,
                 DWRITE_FONT_WEIGHT_NORMAL,
                 DWRITE_FONT_STYLE_NORMAL,
                 DWRITE_FONT_STRETCH_NORMAL,
-                0.2,
+                size,
                 w!("en-us"),
             )
             .unwrap();

@@ -9,6 +9,7 @@ mod app;
 mod game;
 mod geometry;
 mod graphics;
+mod main_menu;
 
 fn main() -> Result<()> {
     let window = create_window();

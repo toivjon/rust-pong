@@ -4,7 +4,7 @@ use windows::core::Result;
 use windows::Win32::Foundation::*;
 use windows::Win32::UI::WindowsAndMessaging::*;
 
-use crate::{game::Game, graphics::Graphics};
+use crate::{graphics::Graphics, main_menu::MainMenu};
 
 pub struct App {
     graphics: Graphics,
@@ -13,7 +13,7 @@ pub struct App {
 }
 
 pub trait Scene {
-    fn tick(&mut self, dt: Duration);
+    fn tick(&mut self, dt: Duration) -> Option<Box<dyn Scene>>;
     fn draw(&self, ctx: &Graphics);
     fn on_key_down(&mut self, key: u16);
     fn on_key_up(&mut self, key: u16);
@@ -23,7 +23,7 @@ impl App {
     pub fn new(window: HWND) -> Self {
         let mut app = App {
             graphics: Graphics::new(window).unwrap(),
-            scene: Box::new(Game::new()),
+            scene: Box::new(MainMenu::new()),
             tick_time: Instant::now(),
         };
         unsafe { SetWindowLongPtrA(window, GWLP_USERDATA, &mut app as *mut _ as _) };
@@ -47,7 +47,10 @@ impl App {
         let delta_time = now.duration_since(self.tick_time);
         self.tick_time = now;
 
-        self.scene.tick(delta_time);
+        let next_scene = self.scene.tick(delta_time);
+        if next_scene.is_some() {
+            self.scene = next_scene.unwrap();
+        }
     }
 
     pub fn draw(&mut self) -> Result<()> {
