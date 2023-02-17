@@ -15,7 +15,7 @@ fn main() -> Result<()> {
     let window = create_window();
     let mut app = App::new(window);
     let mut msg = MSG::default();
-    loop {
+    while app.running {
         unsafe {
             // Check and acquire system messages from the message queue.
             while PeekMessageA(&mut msg, HWND(0), 0, 0, PM_REMOVE).into() {
@@ -29,6 +29,7 @@ fn main() -> Result<()> {
         app.tick();
         app.draw()?;
     }
+    Ok(())
 }
 
 fn create_window() -> HWND {

@@ -122,11 +122,11 @@ impl Game {
 }
 
 impl Scene for Game {
-    fn tick(&mut self, dt: Duration) -> Option<Box<dyn Scene>> {
+    fn tick(&mut self, dt: Duration) -> (Option<Box<dyn Scene>>, bool) {
         // Skip physics if countdown is still in progress.
         self.countdown -= Duration::min(self.countdown, dt);
         if !self.countdown.is_zero() {
-            return None;
+            return (None, false);
         }
         self.apply_movement(dt);
 
@@ -174,7 +174,7 @@ impl Scene for Game {
             // TODO check if game is over?
             self.left_score.set_text(self.left_player.points);
         }
-        None
+        (None, false)
     }
 
     /// Draw the visible game world entities.

@@ -92,15 +92,15 @@ impl Scene for MainMenu {
         ctx.draw_rectangle(&self.footer);
     }
 
-    fn tick(&mut self, _dt: Duration) -> Option<Box<dyn Scene>> {
+    fn tick(&mut self, _dt: Duration) -> (Option<Box<dyn Scene>>, bool) {
         if self.selected {
             if self.highlighter.y < self.start.y {
-                return Some(Box::new(Game::new()));
+                return (Some(Box::new(Game::new())), false);
             } else {
-                // TODO return exit scene.
+                return (None, true);
             }
         }
-        None
+        (None, false)
     }
 
     fn on_key_down(&mut self, _key: u16) {

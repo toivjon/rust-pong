@@ -10,10 +10,11 @@ pub struct App {
     graphics: Graphics,
     scene: Box<dyn Scene>,
     tick_time: Instant,
+    pub running: bool,
 }
 
 pub trait Scene {
-    fn tick(&mut self, dt: Duration) -> Option<Box<dyn Scene>>;
+    fn tick(&mut self, dt: Duration) -> (Option<Box<dyn Scene>>, bool);
     fn draw(&self, ctx: &Graphics);
     fn on_key_down(&mut self, key: u16);
     fn on_key_up(&mut self, key: u16);
@@ -25,6 +26,7 @@ impl App {
             graphics: Graphics::new(window).unwrap(),
             scene: Box::new(MainMenu::new()),
             tick_time: Instant::now(),
+            running: true,
         };
         unsafe { SetWindowLongPtrA(window, GWLP_USERDATA, &mut app as *mut _ as _) };
         app
@@ -48,8 +50,10 @@ impl App {
         self.tick_time = now;
 
         let next_scene = self.scene.tick(delta_time);
-        if next_scene.is_some() {
-            self.scene = next_scene.unwrap();
+        if next_scene.0.is_some() {
+            self.scene = next_scene.0.unwrap();
+        } else if next_scene.1 {
+            self.running = false;
         }
     }
 
