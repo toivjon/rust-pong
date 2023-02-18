@@ -22,3 +22,4 @@ This Pong implementation contains the following features.
 
 - Each game lasts until either player receives the 10th point.
 - Both paddles are controlled by human players.
+- Both paddles are returned to their default position after each reset.
