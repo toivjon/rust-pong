@@ -3,10 +3,10 @@ use std::time::Duration;
 use windows::Win32::UI::Input::KeyboardAndMouse::{VIRTUAL_KEY, VK_DOWN, VK_RETURN, VK_UP};
 
 use crate::{
-    app::Scene,
     geometry::{Rectangle, Text},
     graphics::Graphics,
     scenes::Court,
+    scenes::Scene,
 };
 
 /// The menu where player can select to start or quit the game.

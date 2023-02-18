@@ -2,7 +2,7 @@ use std::time::Duration;
 
 use windows::Win32::UI::Input::KeyboardAndMouse::{VIRTUAL_KEY, VK_RETURN};
 
-use crate::{app::Scene, geometry::Text, graphics::Graphics, scenes::MainMenu};
+use crate::{geometry::Text, graphics::Graphics, scenes::MainMenu, scenes::Scene};
 
 pub struct EndGame {
     topic: Text,

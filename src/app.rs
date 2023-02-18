@@ -1,23 +1,19 @@
-use std::time::{Duration, Instant};
+use std::time::Instant;
 
 use windows::core::Result;
 use windows::Win32::Foundation::*;
 use windows::Win32::UI::WindowsAndMessaging::*;
 
-use crate::{graphics::Graphics, scenes::MainMenu};
+use crate::{
+    graphics::Graphics,
+    scenes::{MainMenu, Scene},
+};
 
 pub struct App {
     graphics: Graphics,
     scene: Box<dyn Scene>,
     tick_time: Instant,
     pub running: bool,
-}
-
-pub trait Scene {
-    fn tick(&mut self, dt: Duration) -> (Option<Box<dyn Scene>>, bool);
-    fn draw(&self, ctx: &Graphics);
-    fn on_key_down(&mut self, key: u16);
-    fn on_key_up(&mut self, key: u16);
 }
 
 impl App {

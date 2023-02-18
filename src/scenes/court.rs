@@ -3,10 +3,10 @@ use std::time::Duration;
 use windows::Win32::UI::Input::KeyboardAndMouse::*;
 
 use crate::{
-    app::Scene,
     geometry::{Rectangle, Text},
     graphics::Graphics,
     scenes::EndGame,
+    scenes::Scene,
 };
 
 /// A constant for the paddle movement velocity.
