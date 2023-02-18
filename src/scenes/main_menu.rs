@@ -82,16 +82,6 @@ impl MainMenu {
 }
 
 impl Scene for MainMenu {
-    fn draw(&self, ctx: &Graphics) {
-        ctx.draw_rectangle(&self.header);
-        ctx.draw_text(&self.topic);
-        ctx.draw_rectangle(&self.topic_underline);
-        ctx.draw_text(&self.start);
-        ctx.draw_text(&self.quit);
-        ctx.draw_rectangle(&self.highlighter);
-        ctx.draw_rectangle(&self.footer);
-    }
-
     fn tick(&mut self, _dt: Duration) -> (Option<Box<dyn Scene>>, bool) {
         if self.selected {
             if self.highlighter.y < self.start.y {
@@ -101,6 +91,16 @@ impl Scene for MainMenu {
             }
         }
         (None, false)
+    }
+
+    fn draw(&self, ctx: &Graphics) {
+        ctx.draw_rectangle(&self.header);
+        ctx.draw_text(&self.topic);
+        ctx.draw_rectangle(&self.topic_underline);
+        ctx.draw_text(&self.start);
+        ctx.draw_text(&self.quit);
+        ctx.draw_rectangle(&self.highlighter);
+        ctx.draw_rectangle(&self.footer);
     }
 
     fn on_key_down(&mut self, _key: u16) {
