@@ -16,7 +16,7 @@ const PADDLE_VELOCITY: f32 = 0.001;
 const BALL_VELOCITY: f32 = 0.0003;
 
 /// The duration of the countdown at the beginning of each round.
-const COUNTDOWN: Duration = Duration::from_secs(1);
+const COUNTDOWN: Duration = Duration::from_millis(500);
 
 /// The amount of additional push added to collision handling.
 const NUDGE: f32 = 0.001;
