@@ -6,7 +6,7 @@ use crate::{
     app::Scene,
     geometry::{Rectangle, Text},
     graphics::Graphics,
-    scenes::court::CourtScene,
+    scenes::CourtScene,
 };
 
 /// The menu where player can select to start or quit the game.

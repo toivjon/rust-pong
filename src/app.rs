@@ -4,7 +4,7 @@ use windows::core::Result;
 use windows::Win32::Foundation::*;
 use windows::Win32::UI::WindowsAndMessaging::*;
 
-use crate::{graphics::Graphics, scenes::main_menu::MainMenuScene};
+use crate::{graphics::Graphics, scenes::MainMenuScene};
 
 pub struct App {
     graphics: Graphics,
