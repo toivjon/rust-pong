@@ -2,7 +2,7 @@ use std::time::Duration;
 
 use windows::Win32::UI::Input::KeyboardAndMouse::{VIRTUAL_KEY, VK_RETURN};
 
-use crate::{app::Scene, geometry::Text, graphics::Graphics, main_menu::MainMenu};
+use crate::{app::Scene, geometry::Text, graphics::Graphics, main_menu_scene::MainMenuScene};
 
 pub struct EndGameScene {
     topic: Text,
@@ -44,7 +44,7 @@ impl EndGameScene {
 impl Scene for EndGameScene {
     fn tick(&mut self, _dt: Duration) -> (Option<Box<dyn Scene>>, bool) {
         if self.selected {
-            return (Some(Box::new(MainMenu::new())), false);
+            return (Some(Box::new(MainMenuScene::new())), false);
         }
         (None, false)
     }

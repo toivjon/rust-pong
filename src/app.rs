@@ -4,7 +4,7 @@ use windows::core::Result;
 use windows::Win32::Foundation::*;
 use windows::Win32::UI::WindowsAndMessaging::*;
 
-use crate::{graphics::Graphics, main_menu::MainMenu};
+use crate::{graphics::Graphics, main_menu_scene::MainMenuScene};
 
 pub struct App {
     graphics: Graphics,
@@ -24,7 +24,7 @@ impl App {
     pub fn new(window: HWND) -> Self {
         let mut app = App {
             graphics: Graphics::new(window).unwrap(),
-            scene: Box::new(MainMenu::new()),
+            scene: Box::new(MainMenuScene::new()),
             tick_time: Instant::now(),
             running: true,
         };

@@ -10,7 +10,7 @@ mod court_scene;
 mod end_game_scene;
 mod geometry;
 mod graphics;
-mod main_menu;
+mod main_menu_scene;
 
 fn main() -> Result<()> {
     let window = create_window();

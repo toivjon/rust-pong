@@ -10,7 +10,7 @@ use crate::{
 };
 
 /// The menu where player can select to start or quit the game.
-pub struct MainMenu {
+pub struct MainMenuScene {
     header: Rectangle,
     topic: Text,
     topic_underline: Rectangle,
@@ -22,7 +22,7 @@ pub struct MainMenu {
     selected: bool,
 }
 
-impl MainMenu {
+impl MainMenuScene {
     pub fn new() -> Self {
         Self {
             header: Rectangle {
@@ -81,7 +81,7 @@ impl MainMenu {
     }
 }
 
-impl Scene for MainMenu {
+impl Scene for MainMenuScene {
     fn draw(&self, ctx: &Graphics) {
         ctx.draw_rectangle(&self.header);
         ctx.draw_text(&self.topic);
