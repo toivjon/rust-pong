@@ -4,9 +4,9 @@ use windows::Win32::UI::Input::KeyboardAndMouse::{VIRTUAL_KEY, VK_DOWN, VK_RETUR
 
 use crate::{
     app::Scene,
-    court_scene::CourtScene,
     geometry::{Rectangle, Text},
     graphics::Graphics,
+    scenes::court_scene::CourtScene,
 };
 
 /// The menu where player can select to start or quit the game.

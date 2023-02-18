@@ -4,9 +4,9 @@ use windows::Win32::UI::Input::KeyboardAndMouse::*;
 
 use crate::{
     app::Scene,
-    end_game_scene::EndGameScene,
     geometry::{Rectangle, Text},
     graphics::Graphics,
+    scenes::end_game_scene::EndGameScene,
 };
 
 /// A constant for the paddle movement velocity.

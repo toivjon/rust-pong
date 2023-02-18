@@ -6,11 +6,9 @@ use windows::Win32::System::LibraryLoader::GetModuleHandleA;
 use windows::Win32::UI::WindowsAndMessaging::*;
 
 mod app;
-mod court_scene;
-mod end_game_scene;
 mod geometry;
 mod graphics;
-mod main_menu_scene;
+mod scenes;
 
 fn main() -> Result<()> {
     let window = create_window();
