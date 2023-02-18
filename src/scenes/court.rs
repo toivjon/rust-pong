@@ -166,7 +166,7 @@ impl Scene for Court {
         // Check whether ball hits the goals.
         if self.ball.x <= 0.0 {
             self.clear_state();
-            self.right_player.points = self.right_player.points + 1;
+            self.right_player.points += 1;
             if self.right_player.points >= 10 {
                 return (
                     Some(Box::new(EndGame::new(
@@ -179,7 +179,7 @@ impl Scene for Court {
             self.right_score.set_text(self.right_player.points);
         } else if (self.ball.x + self.ball.w) >= 1.0 {
             self.clear_state();
-            self.left_player.points = self.left_player.points + 1;
+            self.left_player.points += 1;
             if self.left_player.points >= 10 {
                 return (
                     Some(Box::new(EndGame::new(
