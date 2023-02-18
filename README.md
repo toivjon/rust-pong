@@ -15,3 +15,10 @@ A list of scene transitions:
 - 1 to 2, when a player starts the game.
 - 2 to 3, when either player receives the 10th point (i.e. the game is over).
 - 3 to 1, when the enter key is being pressed.
+
+## Features
+
+This Pong implementation contains the following features.
+
+- Each game lasts until either player receives the 10th point.
+- Both paddles are controlled by human players.
