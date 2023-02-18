@@ -4,14 +4,14 @@ use windows::Win32::UI::Input::KeyboardAndMouse::{VIRTUAL_KEY, VK_RETURN};
 
 use crate::{app::Scene, geometry::Text, graphics::Graphics, main_menu::MainMenu};
 
-pub struct EndScene {
+pub struct EndGameScene {
     topic: Text,
     result: Text,
     help: Text,
     selected: bool,
 }
 
-impl EndScene {
+impl EndGameScene {
     pub fn new(l_score: u8, r_score: u8) -> Self {
         Self {
             topic: Text {
@@ -41,7 +41,7 @@ impl EndScene {
     }
 }
 
-impl Scene for EndScene {
+impl Scene for EndGameScene {
     fn tick(&mut self, _dt: Duration) -> (Option<Box<dyn Scene>>, bool) {
         if self.selected {
             return (Some(Box::new(MainMenu::new())), false);

@@ -4,7 +4,7 @@ use windows::Win32::UI::Input::KeyboardAndMouse::*;
 
 use crate::{
     app::Scene,
-    end_scene::EndScene,
+    end_game_scene::EndGameScene,
     geometry::{Rectangle, Text},
     graphics::Graphics,
 };
@@ -169,7 +169,7 @@ impl Scene for CourtScene {
             self.right_player.points = self.right_player.points + 1;
             if self.right_player.points >= 10 {
                 return (
-                    Some(Box::new(EndScene::new(
+                    Some(Box::new(EndGameScene::new(
                         self.left_player.points,
                         self.right_player.points,
                     ))),
@@ -182,7 +182,7 @@ impl Scene for CourtScene {
             self.left_player.points = self.left_player.points + 1;
             if self.left_player.points >= 10 {
                 return (
-                    Some(Box::new(EndScene::new(
+                    Some(Box::new(EndGameScene::new(
                         self.left_player.points,
                         self.right_player.points,
                     ))),
