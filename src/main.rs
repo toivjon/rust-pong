@@ -14,6 +14,7 @@ fn main() -> Result<()> {
     let window = create_window();
     let mut app = App::new(window);
     let mut msg = MSG::default();
+    unsafe { SetWindowLongPtrA(window, GWLP_USERDATA, &mut app as *mut _ as _) };
     while app.running {
         unsafe {
             // Check and acquire system messages from the message queue.

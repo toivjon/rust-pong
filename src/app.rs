@@ -2,7 +2,6 @@ use std::time::Instant;
 
 use windows::core::Result;
 use windows::Win32::Foundation::*;
-use windows::Win32::UI::WindowsAndMessaging::*;
 
 use crate::{
     graphics::Graphics,
@@ -18,14 +17,12 @@ pub struct App {
 
 impl App {
     pub fn new(window: HWND) -> Self {
-        let mut app = App {
+        App {
             graphics: Graphics::new(window).unwrap(),
             scene: Box::new(MainMenu::new()),
             tick_time: Instant::now(),
             running: true,
-        };
-        unsafe { SetWindowLongPtrA(window, GWLP_USERDATA, &mut app as *mut _ as _) };
-        app
+        }
     }
 
     pub fn on_resize(&mut self) {
