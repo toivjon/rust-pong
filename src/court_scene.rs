@@ -21,7 +21,7 @@ const COUNTDOWN: Duration = Duration::from_secs(1);
 /// The amount of additional push added to collision handling.
 const NUDGE: f32 = 0.001;
 
-pub struct Game {
+pub struct CourtScene {
     pub ball: Rectangle,
     pub left_paddle: Rectangle,
     pub right_paddle: Rectangle,
@@ -44,9 +44,9 @@ struct Player {
     points: u8,
 }
 
-impl Game {
+impl CourtScene {
     pub fn new() -> Self {
-        Game {
+        CourtScene {
             ball: Rectangle {
                 x: 0.5 - (0.025 / 2.0),
                 y: 0.5 - (0.0325 / 2.0),
@@ -122,7 +122,7 @@ impl Game {
     }
 }
 
-impl Scene for Game {
+impl Scene for CourtScene {
     fn tick(&mut self, dt: Duration) -> (Option<Box<dyn Scene>>, bool) {
         // Skip physics if countdown is still in progress.
         self.countdown -= Duration::min(self.countdown, dt);

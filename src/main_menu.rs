@@ -4,7 +4,7 @@ use windows::Win32::UI::Input::KeyboardAndMouse::{VIRTUAL_KEY, VK_DOWN, VK_RETUR
 
 use crate::{
     app::Scene,
-    game::Game,
+    court_scene::CourtScene,
     geometry::{Rectangle, Text},
     graphics::Graphics,
 };
@@ -95,7 +95,7 @@ impl Scene for MainMenu {
     fn tick(&mut self, _dt: Duration) -> (Option<Box<dyn Scene>>, bool) {
         if self.selected {
             if self.highlighter.y < self.start.y {
-                return (Some(Box::new(Game::new())), false);
+                return (Some(Box::new(CourtScene::new())), false);
             } else {
                 return (None, true);
             }
