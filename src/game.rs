@@ -4,6 +4,7 @@ use windows::Win32::UI::Input::KeyboardAndMouse::*;
 
 use crate::{
     app::Scene,
+    end_scene::EndScene,
     geometry::{Rectangle, Text},
     graphics::Graphics,
 };
@@ -165,13 +166,29 @@ impl Scene for Game {
         // Check whether ball hits the goals.
         if self.ball.x <= 0.0 {
             self.clear_state();
-            self.right_player.points = u8::min(9, self.right_player.points + 1);
-            // TODO check if game is over?
+            self.right_player.points = self.right_player.points + 1;
+            if self.right_player.points >= 10 {
+                return (
+                    Some(Box::new(EndScene::new(
+                        self.left_player.points,
+                        self.right_player.points,
+                    ))),
+                    false,
+                );
+            }
             self.right_score.set_text(self.right_player.points);
         } else if (self.ball.x + self.ball.w) >= 1.0 {
             self.clear_state();
-            self.left_player.points = u8::min(9, self.left_player.points + 1);
-            // TODO check if game is over?
+            self.left_player.points = self.left_player.points + 1;
+            if self.left_player.points >= 10 {
+                return (
+                    Some(Box::new(EndScene::new(
+                        self.left_player.points,
+                        self.right_player.points,
+                    ))),
+                    false,
+                );
+            }
             self.left_score.set_text(self.left_player.points);
         }
         (None, false)

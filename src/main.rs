@@ -6,6 +6,7 @@ use windows::Win32::System::LibraryLoader::GetModuleHandleA;
 use windows::Win32::UI::WindowsAndMessaging::*;
 
 mod app;
+mod end_scene;
 mod game;
 mod geometry;
 mod graphics;
