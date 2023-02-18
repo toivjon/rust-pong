@@ -6,7 +6,7 @@ use crate::{
     app::Scene,
     geometry::{Rectangle, Text},
     graphics::Graphics,
-    scenes::end_game_scene::EndGameScene,
+    scenes::end_game::EndGameScene,
 };
 
 /// A constant for the paddle movement velocity.
