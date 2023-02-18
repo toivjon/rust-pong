@@ -22,13 +22,13 @@ const COUNTDOWN: Duration = Duration::from_millis(500);
 const NUDGE: f32 = 0.001;
 
 pub struct Court {
-    pub ball: Rectangle,
-    pub left_paddle: Rectangle,
-    pub right_paddle: Rectangle,
-    pub top_wall: Rectangle,
-    pub bottom_wall: Rectangle,
-    pub left_score: Text,
-    pub right_score: Text,
+    ball: Rectangle,
+    left_paddle: Rectangle,
+    right_paddle: Rectangle,
+    top_wall: Rectangle,
+    bottom_wall: Rectangle,
+    left_score: Text,
+    right_score: Text,
 
     ball_x_movement: f32,
     ball_y_movement: f32,
