@@ -6,11 +6,11 @@ use crate::{
     app::Scene,
     geometry::{Rectangle, Text},
     graphics::Graphics,
-    scenes::CourtScene,
+    scenes::Court,
 };
 
 /// The menu where player can select to start or quit the game.
-pub struct MainMenuScene {
+pub struct MainMenu {
     header: Rectangle,
     topic: Text,
     topic_underline: Rectangle,
@@ -22,7 +22,7 @@ pub struct MainMenuScene {
     selected: bool,
 }
 
-impl MainMenuScene {
+impl MainMenu {
     pub fn new() -> Self {
         Self {
             header: Rectangle {
@@ -81,7 +81,7 @@ impl MainMenuScene {
     }
 }
 
-impl Scene for MainMenuScene {
+impl Scene for MainMenu {
     fn draw(&self, ctx: &Graphics) {
         ctx.draw_rectangle(&self.header);
         ctx.draw_text(&self.topic);
@@ -95,7 +95,7 @@ impl Scene for MainMenuScene {
     fn tick(&mut self, _dt: Duration) -> (Option<Box<dyn Scene>>, bool) {
         if self.selected {
             if self.highlighter.y < self.start.y {
-                return (Some(Box::new(CourtScene::new())), false);
+                return (Some(Box::new(Court::new())), false);
             } else {
                 return (None, true);
             }

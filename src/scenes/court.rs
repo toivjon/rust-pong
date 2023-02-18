@@ -6,7 +6,7 @@ use crate::{
     app::Scene,
     geometry::{Rectangle, Text},
     graphics::Graphics,
-    scenes::EndGameScene,
+    scenes::EndGame,
 };
 
 /// A constant for the paddle movement velocity.
@@ -21,7 +21,7 @@ const COUNTDOWN: Duration = Duration::from_secs(1);
 /// The amount of additional push added to collision handling.
 const NUDGE: f32 = 0.001;
 
-pub struct CourtScene {
+pub struct Court {
     pub ball: Rectangle,
     pub left_paddle: Rectangle,
     pub right_paddle: Rectangle,
@@ -44,9 +44,9 @@ struct Player {
     points: u8,
 }
 
-impl CourtScene {
+impl Court {
     pub fn new() -> Self {
-        CourtScene {
+        Court {
             ball: Rectangle {
                 x: 0.5 - (0.025 / 2.0),
                 y: 0.5 - (0.0325 / 2.0),
@@ -122,7 +122,7 @@ impl CourtScene {
     }
 }
 
-impl Scene for CourtScene {
+impl Scene for Court {
     fn tick(&mut self, dt: Duration) -> (Option<Box<dyn Scene>>, bool) {
         // Skip physics if countdown is still in progress.
         self.countdown -= Duration::min(self.countdown, dt);
@@ -169,7 +169,7 @@ impl Scene for CourtScene {
             self.right_player.points = self.right_player.points + 1;
             if self.right_player.points >= 10 {
                 return (
-                    Some(Box::new(EndGameScene::new(
+                    Some(Box::new(EndGame::new(
                         self.left_player.points,
                         self.right_player.points,
                     ))),
@@ -182,7 +182,7 @@ impl Scene for CourtScene {
             self.left_player.points = self.left_player.points + 1;
             if self.left_player.points >= 10 {
                 return (
-                    Some(Box::new(EndGameScene::new(
+                    Some(Box::new(EndGame::new(
                         self.left_player.points,
                         self.right_player.points,
                     ))),
