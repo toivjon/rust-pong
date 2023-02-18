@@ -24,3 +24,5 @@ This Pong implementation contains the following features.
 - Both paddles are controlled by human players.
 - Both paddles are returned to their default position after each reset.
 - Ball movement is being stopped for half second after each reset.
+- Ball velocity is increased on a hit with a paddle.
+- Ball velocity does not exceed the pre-defined maximum velocity.

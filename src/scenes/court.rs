@@ -12,8 +12,14 @@ use crate::{
 /// A constant for the paddle movement velocity.
 const PADDLE_VELOCITY: f32 = 0.001;
 
-/// A constant for the ball movement velocity.
+/// Initial ball movement velocity.
 const BALL_VELOCITY: f32 = 0.0003;
+
+/// A scalar to speed up ball velocity on each paddle hit.
+const BALL_VELOCITY_SCALAR: f32 = 1.1;
+
+/// The maximum movement velocity for the ball.
+const BALL_MAX_VELOCITY: f32 = 0.0006;
 
 /// The duration of the countdown at the beginning of each round.
 const COUNTDOWN: Duration = Duration::from_millis(500);
@@ -89,8 +95,8 @@ impl Court {
                 text: "0".encode_utf16().collect(),
                 big: true,
             },
-            ball_x_movement: 1.0,
-            ball_y_movement: -1.0,
+            ball_x_movement: BALL_VELOCITY,
+            ball_y_movement: -BALL_VELOCITY,
             left_player: Player {
                 movement: 0.0,
                 points: 0,
@@ -108,8 +114,8 @@ impl Court {
         let millis = dt.as_millis() as f32;
         self.right_paddle.y += self.right_player.movement * PADDLE_VELOCITY * millis;
         self.left_paddle.y += self.left_player.movement * PADDLE_VELOCITY * millis;
-        self.ball.y += self.ball_y_movement * BALL_VELOCITY * millis;
-        self.ball.x += self.ball_x_movement * BALL_VELOCITY * millis;
+        self.ball.y += self.ball_y_movement * millis;
+        self.ball.x += self.ball_x_movement * millis;
     }
 
     /// Clear the gameyard state by centering the ball and paddles and starting a new countdown.
@@ -119,6 +125,8 @@ impl Court {
         self.left_paddle.y = 0.5 - (self.left_paddle.h / 2.0);
         self.right_paddle.y = 0.5 - (self.right_paddle.h / 2.0);
         self.countdown = COUNTDOWN;
+        self.ball_x_movement *= 1.0 / self.ball_x_movement * BALL_VELOCITY;
+        self.ball_y_movement *= 1.0 / self.ball_y_movement * BALL_VELOCITY;
     }
 }
 
@@ -149,18 +157,34 @@ impl Scene for Court {
         if self.bottom_wall.collides(&self.ball) {
             self.ball.y = self.bottom_wall.y - self.ball.h - NUDGE;
             self.ball_y_movement = -self.ball_y_movement;
+            self.ball_y_movement *= BALL_VELOCITY_SCALAR;
+            self.ball_x_movement *= BALL_VELOCITY_SCALAR;
+            self.ball_y_movement = f32::min(self.ball_y_movement, BALL_MAX_VELOCITY);
+            self.ball_x_movement = f32::min(self.ball_x_movement, BALL_MAX_VELOCITY);
         } else if self.top_wall.collides(&self.ball) {
             self.ball.y = self.top_wall.y + self.top_wall.h + NUDGE;
             self.ball_y_movement = -self.ball_y_movement;
+            self.ball_y_movement *= BALL_VELOCITY_SCALAR;
+            self.ball_x_movement *= BALL_VELOCITY_SCALAR;
+            self.ball_y_movement = f32::min(self.ball_y_movement, BALL_MAX_VELOCITY);
+            self.ball_x_movement = f32::min(self.ball_x_movement, BALL_MAX_VELOCITY);
         }
 
         // reflect ball X-movement if it hits the paddles.
         if self.left_paddle.collides(&self.ball) {
             self.ball.x = self.left_paddle.x + self.left_paddle.w + NUDGE;
             self.ball_x_movement = -self.ball_x_movement;
+            self.ball_y_movement *= BALL_VELOCITY_SCALAR;
+            self.ball_x_movement *= BALL_VELOCITY_SCALAR;
+            self.ball_y_movement = f32::min(self.ball_y_movement, BALL_MAX_VELOCITY);
+            self.ball_x_movement = f32::min(self.ball_x_movement, BALL_MAX_VELOCITY);
         } else if self.right_paddle.collides(&self.ball) {
             self.ball.x = self.right_paddle.x - self.ball.w - NUDGE;
             self.ball_x_movement = -self.ball_x_movement;
+            self.ball_y_movement *= BALL_VELOCITY_SCALAR;
+            self.ball_x_movement *= BALL_VELOCITY_SCALAR;
+            self.ball_y_movement = f32::min(self.ball_y_movement, BALL_MAX_VELOCITY);
+            self.ball_x_movement = f32::min(self.ball_x_movement, BALL_MAX_VELOCITY);
         }
 
         // Check whether ball hits the goals.
