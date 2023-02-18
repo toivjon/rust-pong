@@ -3,7 +3,7 @@ use std::time::Duration;
 use windows::Win32::UI::Input::KeyboardAndMouse::*;
 
 use crate::{
-    geometry::{Rectangle, Text},
+    geometry::{Rectangle, Text, TextSize},
     graphics::Graphics,
     scenes::EndGame,
     scenes::Scene,
@@ -87,13 +87,13 @@ impl Court {
                 x: 0.35,
                 y: 0.15,
                 text: "0".encode_utf16().collect(),
-                big: true,
+                size: TextSize::BIG,
             },
             right_score: Text {
                 x: 0.65,
                 y: 0.15,
                 text: "0".encode_utf16().collect(),
-                big: true,
+                size: TextSize::BIG,
             },
             ball_x_movement: BALL_VELOCITY,
             ball_y_movement: -BALL_VELOCITY,

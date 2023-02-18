@@ -7,7 +7,7 @@ use windows::Win32::Graphics::Direct2D::*;
 use windows::Win32::Graphics::DirectWrite::*;
 use windows::Win32::UI::WindowsAndMessaging::GetClientRect;
 
-use crate::geometry::{Rectangle, Text};
+use crate::geometry::{Rectangle, Text, TextSize};
 
 /// A constant for the view aspect ratio.
 const ASPECT: f32 = 1.3;
@@ -20,6 +20,7 @@ pub struct Graphics {
     brush: Option<ID2D1SolidColorBrush>,
     transform: Matrix3x2,
     big_text_format: IDWriteTextFormat,
+    medium_text_format: IDWriteTextFormat,
     small_text_format: IDWriteTextFormat,
 }
 
@@ -32,7 +33,8 @@ impl Graphics {
             brush: None,
             transform: create_aspect_transform(hwnd),
             big_text_format: create_text_format(0.2),
-            small_text_format: create_text_format(0.1),
+            medium_text_format: create_text_format(0.1),
+            small_text_format: create_text_format(0.05),
         })
     }
 
@@ -68,9 +70,10 @@ impl Graphics {
     pub fn draw_text(&self, text: &Text) {
         let ctx = self.target.as_ref().unwrap();
         let brush = self.brush.as_ref().unwrap();
-        let format = match text.big {
-            true => &self.big_text_format,
-            false => &self.small_text_format,
+        let format = match text.size {
+            TextSize::SMALL => &self.small_text_format,
+            TextSize::MEDIUM => &self.medium_text_format,
+            TextSize::BIG => &self.big_text_format,
         };
         unsafe {
             let transform = Matrix3x2::translation(text.x, text.y);

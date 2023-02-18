@@ -16,12 +16,19 @@ impl Rectangle {
     }
 }
 
+/// The pre-defined size for a text object.
+pub enum TextSize {
+    SMALL,
+    MEDIUM,
+    BIG,
+}
+
 /// A simple text with a position, text and format.
 pub struct Text {
     pub x: f32,
     pub y: f32,
     pub text: Vec<u16>,
-    pub big: bool,
+    pub size: TextSize,
 }
 
 impl Text {

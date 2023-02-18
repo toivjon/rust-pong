@@ -2,7 +2,12 @@ use std::time::Duration;
 
 use windows::Win32::UI::Input::KeyboardAndMouse::{VIRTUAL_KEY, VK_RETURN};
 
-use crate::{geometry::Text, graphics::Graphics, scenes::MainMenu, scenes::Scene};
+use crate::{
+    geometry::{Text, TextSize},
+    graphics::Graphics,
+    scenes::MainMenu,
+    scenes::Scene,
+};
 
 pub struct EndGame {
     topic: Text,
@@ -16,25 +21,25 @@ impl EndGame {
         Self {
             topic: Text {
                 x: 0.5,
-                y: 0.2,
+                y: 0.25,
                 text: "GAME OVER".encode_utf16().collect(),
-                big: true,
+                size: TextSize::BIG,
             },
             result: Text {
                 x: 0.5,
-                y: 0.5,
+                y: 0.525,
                 text: format!("{} - {}", r_score, l_score)
                     .encode_utf16()
                     .collect(),
-                big: true,
+                size: TextSize::MEDIUM,
             },
             help: Text {
                 x: 0.5,
-                y: 0.8,
+                y: 0.75,
                 text: "Press ENTER to go back to main menu"
                     .encode_utf16()
                     .collect(),
-                big: false,
+                size: TextSize::SMALL,
             },
             selected: false,
         }

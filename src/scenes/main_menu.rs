@@ -3,7 +3,7 @@ use std::time::Duration;
 use windows::Win32::UI::Input::KeyboardAndMouse::{VIRTUAL_KEY, VK_DOWN, VK_RETURN, VK_UP};
 
 use crate::{
-    geometry::{Rectangle, Text},
+    geometry::{Rectangle, Text, TextSize},
     graphics::Graphics,
     scenes::Court,
     scenes::Scene,
@@ -35,7 +35,7 @@ impl MainMenu {
                 x: 0.5,
                 y: 0.20,
                 text: "PONG".encode_utf16().collect(),
-                big: true,
+                size: TextSize::BIG,
             },
             topic_underline: Rectangle {
                 x: 0.25,
@@ -47,13 +47,13 @@ impl MainMenu {
                 x: 0.5,
                 y: 0.5,
                 text: "START".encode_utf16().collect(),
-                big: false,
+                size: TextSize::MEDIUM,
             },
             quit: Text {
                 x: 0.5,
                 y: 0.7,
                 text: "QUIT".encode_utf16().collect(),
-                big: false,
+                size: TextSize::MEDIUM,
             },
             highlighter: Rectangle {
                 x: 0.3,
