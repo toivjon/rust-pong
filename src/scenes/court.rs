@@ -194,7 +194,6 @@ impl Scene for Court {
         (None, false)
     }
 
-    /// Draw the visible game world entities.
     fn draw(&self, ctx: &Graphics) {
         ctx.draw_rectangle(&self.ball);
         ctx.draw_rectangle(&self.ball);
