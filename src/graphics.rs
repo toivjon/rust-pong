@@ -39,7 +39,7 @@ impl Graphics {
         })
     }
 
-    pub fn draw_scene(&mut self, scene: &dyn Scene) -> Result<()> {
+    pub fn draw(&mut self, scene: &dyn Scene) -> Result<()> {
         self.begin_draw()?;
         scene.draw(self);
         self.end_draw();

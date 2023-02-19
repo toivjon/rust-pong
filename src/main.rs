@@ -30,7 +30,7 @@ fn main() -> Result<()> {
             }
         }
         app.tick();
-        app.graphics.draw_scene(app.scene.as_ref())?;
+        app.graphics.draw(app.scene.as_ref())?;
     }
     Ok(())
 }
