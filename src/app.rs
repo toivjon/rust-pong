@@ -1,17 +1,16 @@
-use std::time::Instant;
-
 use windows::core::Result;
 use windows::Win32::Foundation::*;
 
 use crate::{
     graphics::Graphics,
     scenes::{MainMenu, Scene},
+    timer::Timer,
 };
 
 pub struct App {
     graphics: Graphics,
     scene: Box<dyn Scene>,
-    tick_time: Instant,
+    timer: Timer,
     pub running: bool,
 }
 
@@ -20,7 +19,7 @@ impl App {
         App {
             graphics: Graphics::new(window).unwrap(),
             scene: Box::new(MainMenu::new()),
-            tick_time: Instant::now(),
+            timer: Timer::new(),
             running: true,
         }
     }
@@ -38,11 +37,7 @@ impl App {
     }
 
     pub fn tick(&mut self) {
-        let now = Instant::now();
-        let delta_time = now.duration_since(self.tick_time);
-        self.tick_time = now;
-
-        let next_scene = self.scene.tick(delta_time);
+        let next_scene = self.scene.tick(self.timer.time());
         if next_scene.0.is_some() {
             self.scene = next_scene.0.unwrap();
         } else if next_scene.1 {
