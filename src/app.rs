@@ -1,5 +1,3 @@
-use windows::core::Result;
-
 use crate::{
     graphics::Graphics,
     scenes::{MainMenu, Scene},
@@ -7,8 +5,8 @@ use crate::{
 };
 
 pub struct App {
-    graphics: Graphics,
-    scene: Box<dyn Scene>,
+    pub graphics: Graphics,
+    pub scene: Box<dyn Scene>,
     timer: Timer,
     pub running: bool,
 }
@@ -23,18 +21,6 @@ impl App {
         }
     }
 
-    pub fn on_resize(&mut self) {
-        self.graphics.resize().unwrap()
-    }
-
-    pub fn on_key_down(&mut self, key: u16) {
-        self.scene.on_key_down(key);
-    }
-
-    pub fn on_key_up(&mut self, key: u16) {
-        self.scene.on_key_up(key);
-    }
-
     pub fn tick(&mut self) {
         let next_scene = self.scene.tick(self.timer.time());
         if next_scene.0.is_some() {
@@ -42,9 +28,5 @@ impl App {
         } else if next_scene.1 {
             self.running = false;
         }
-    }
-
-    pub fn draw(&mut self) -> Result<()> {
-        self.graphics.draw_scene(self.scene.as_ref())
     }
 }
