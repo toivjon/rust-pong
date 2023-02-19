@@ -51,9 +51,6 @@ impl App {
     }
 
     pub fn draw(&mut self) -> Result<()> {
-        self.graphics.begin_draw()?;
-        self.scene.draw(&self.graphics);
-        self.graphics.end_draw();
-        Ok(())
+        self.graphics.draw_scene(self.scene.as_ref())
     }
 }

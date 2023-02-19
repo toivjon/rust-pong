@@ -8,6 +8,7 @@ use windows::Win32::Graphics::DirectWrite::*;
 use windows::Win32::UI::WindowsAndMessaging::GetClientRect;
 
 use crate::geometry::{Rectangle, Text, TextSize};
+use crate::scenes::Scene;
 
 /// A constant for the view aspect ratio.
 const ASPECT: f32 = 1.3;
@@ -36,6 +37,13 @@ impl Graphics {
             medium_text_format: create_text_format(0.1),
             small_text_format: create_text_format(0.05),
         })
+    }
+
+    pub fn draw_scene(&mut self, scene: &dyn Scene) -> Result<()> {
+        self.begin_draw()?;
+        scene.draw(self);
+        self.end_draw();
+        Ok(())
     }
 
     pub fn begin_draw(&mut self) -> Result<()> {
