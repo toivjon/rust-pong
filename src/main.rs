@@ -1,4 +1,5 @@
 use app::App;
+use graphics::Graphics;
 use windows::core::Result;
 use windows::s;
 use windows::Win32::Foundation::*;
@@ -13,7 +14,8 @@ mod timer;
 
 fn main() -> Result<()> {
     let window = create_window();
-    let mut app = App::new(window);
+    let gfx = Graphics::new(window)?;
+    let mut app = App::new(gfx);
     let mut msg = MSG::default();
     unsafe { SetWindowLongPtrA(window, GWLP_USERDATA, &mut app as *mut _ as _) };
     while app.running {

@@ -1,5 +1,4 @@
 use windows::core::Result;
-use windows::Win32::Foundation::*;
 
 use crate::{
     graphics::Graphics,
@@ -15,9 +14,9 @@ pub struct App {
 }
 
 impl App {
-    pub fn new(window: HWND) -> Self {
+    pub fn new(gfx: Graphics) -> Self {
         App {
-            graphics: Graphics::new(window).unwrap(),
+            graphics: gfx,
             scene: Box::new(MainMenu::new()),
             timer: Timer::new(),
             running: true,
