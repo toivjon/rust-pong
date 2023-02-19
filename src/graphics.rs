@@ -46,7 +46,7 @@ impl Graphics {
         Ok(())
     }
 
-    pub fn begin_draw(&mut self) -> Result<()> {
+    fn begin_draw(&mut self) -> Result<()> {
         if self.target.is_none() {
             self.create_target()?;
         }
@@ -56,6 +56,15 @@ impl Graphics {
             ctx.Clear(Some(&D2D1_COLOR_F::default()));
         }
         Ok(())
+    }
+
+    fn end_draw(&mut self) {
+        let ctx = self.target.as_ref().unwrap();
+        if let Err(error) = unsafe { ctx.EndDraw(None, None) } {
+            if error.code() == D2DERR_RECREATE_TARGET {
+                self.release_target();
+            }
+        }
     }
 
     pub fn draw_rectangle(&self, rectangle: &Rectangle) {
@@ -94,15 +103,6 @@ impl Graphics {
                 D2D1_DRAW_TEXT_OPTIONS_NONE,
                 DWRITE_MEASURING_MODE_NATURAL,
             )
-        }
-    }
-
-    pub fn end_draw(&mut self) {
-        let ctx = self.target.as_ref().unwrap();
-        if let Err(error) = unsafe { ctx.EndDraw(None, None) } {
-            if error.code() == D2DERR_RECREATE_TARGET {
-                self.release_target();
-            }
         }
     }
 
