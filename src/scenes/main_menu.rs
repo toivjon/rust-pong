@@ -35,7 +35,7 @@ impl MainMenu {
                 x: 0.5,
                 y: 0.20,
                 text: "PONG".encode_utf16().collect(),
-                size: TextSize::BIG,
+                size: TextSize::Big,
             },
             topic_underline: Rectangle {
                 x: 0.25,
@@ -47,13 +47,13 @@ impl MainMenu {
                 x: 0.5,
                 y: 0.5,
                 text: "START".encode_utf16().collect(),
-                size: TextSize::MEDIUM,
+                size: TextSize::Medium,
             },
             quit: Text {
                 x: 0.5,
                 y: 0.7,
                 text: "QUIT".encode_utf16().collect(),
-                size: TextSize::MEDIUM,
+                size: TextSize::Medium,
             },
             highlighter: Rectangle {
                 x: 0.3,

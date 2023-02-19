@@ -79,9 +79,9 @@ impl Graphics {
         let ctx = self.target.as_ref().unwrap();
         let brush = self.brush.as_ref().unwrap();
         let format = match text.size {
-            TextSize::SMALL => &self.small_text_format,
-            TextSize::MEDIUM => &self.medium_text_format,
-            TextSize::BIG => &self.big_text_format,
+            TextSize::Small => &self.small_text_format,
+            TextSize::Medium => &self.medium_text_format,
+            TextSize::Big => &self.big_text_format,
         };
         unsafe {
             let transform = Matrix3x2::translation(text.x, text.y);

@@ -23,7 +23,7 @@ impl EndGame {
                 x: 0.5,
                 y: 0.25,
                 text: "GAME OVER".encode_utf16().collect(),
-                size: TextSize::BIG,
+                size: TextSize::Big,
             },
             result: Text {
                 x: 0.5,
@@ -31,7 +31,7 @@ impl EndGame {
                 text: format!("{} - {}", r_score, l_score)
                     .encode_utf16()
                     .collect(),
-                size: TextSize::MEDIUM,
+                size: TextSize::Medium,
             },
             help: Text {
                 x: 0.5,
@@ -39,7 +39,7 @@ impl EndGame {
                 text: "Press ENTER to go back to main menu"
                     .encode_utf16()
                     .collect(),
-                size: TextSize::SMALL,
+                size: TextSize::Small,
             },
             selected: false,
         }

@@ -18,9 +18,9 @@ impl Rectangle {
 
 /// The pre-defined size for a text object.
 pub enum TextSize {
-    SMALL,
-    MEDIUM,
-    BIG,
+    Small,
+    Medium,
+    Big,
 }
 
 /// A simple text with a position, text and format.
