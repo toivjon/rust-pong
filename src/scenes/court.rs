@@ -128,6 +128,14 @@ impl Court {
         self.ball_x_movement *= 1.0 / self.ball_x_movement * BALL_VELOCITY;
         self.ball_y_movement *= 1.0 / self.ball_y_movement * BALL_VELOCITY;
     }
+
+    /// Increase the speed of the ball if the max speed is not yet reached.
+    fn accelerate_ball(&mut self) {
+        self.ball_y_movement *= BALL_VELOCITY_SCALAR;
+        self.ball_x_movement *= BALL_VELOCITY_SCALAR;
+        self.ball_y_movement = f32::min(self.ball_y_movement, BALL_MAX_VELOCITY);
+        self.ball_x_movement = f32::min(self.ball_x_movement, BALL_MAX_VELOCITY);
+    }
 }
 
 impl Scene for Court {
@@ -157,34 +165,22 @@ impl Scene for Court {
         if self.bottom_wall.collides(&self.ball) {
             self.ball.y = self.bottom_wall.y - self.ball.h - NUDGE;
             self.ball_y_movement = -self.ball_y_movement;
-            self.ball_y_movement *= BALL_VELOCITY_SCALAR;
-            self.ball_x_movement *= BALL_VELOCITY_SCALAR;
-            self.ball_y_movement = f32::min(self.ball_y_movement, BALL_MAX_VELOCITY);
-            self.ball_x_movement = f32::min(self.ball_x_movement, BALL_MAX_VELOCITY);
+            self.accelerate_ball();
         } else if self.top_wall.collides(&self.ball) {
             self.ball.y = self.top_wall.y + self.top_wall.h + NUDGE;
             self.ball_y_movement = -self.ball_y_movement;
-            self.ball_y_movement *= BALL_VELOCITY_SCALAR;
-            self.ball_x_movement *= BALL_VELOCITY_SCALAR;
-            self.ball_y_movement = f32::min(self.ball_y_movement, BALL_MAX_VELOCITY);
-            self.ball_x_movement = f32::min(self.ball_x_movement, BALL_MAX_VELOCITY);
+            self.accelerate_ball();
         }
 
         // reflect ball X-movement if it hits the paddles.
         if self.left_paddle.collides(&self.ball) {
             self.ball.x = self.left_paddle.x + self.left_paddle.w + NUDGE;
             self.ball_x_movement = -self.ball_x_movement;
-            self.ball_y_movement *= BALL_VELOCITY_SCALAR;
-            self.ball_x_movement *= BALL_VELOCITY_SCALAR;
-            self.ball_y_movement = f32::min(self.ball_y_movement, BALL_MAX_VELOCITY);
-            self.ball_x_movement = f32::min(self.ball_x_movement, BALL_MAX_VELOCITY);
+            self.accelerate_ball();
         } else if self.right_paddle.collides(&self.ball) {
             self.ball.x = self.right_paddle.x - self.ball.w - NUDGE;
             self.ball_x_movement = -self.ball_x_movement;
-            self.ball_y_movement *= BALL_VELOCITY_SCALAR;
-            self.ball_x_movement *= BALL_VELOCITY_SCALAR;
-            self.ball_y_movement = f32::min(self.ball_y_movement, BALL_MAX_VELOCITY);
-            self.ball_x_movement = f32::min(self.ball_x_movement, BALL_MAX_VELOCITY);
+            self.accelerate_ball();
         }
 
         // Check whether ball hits the goals.
