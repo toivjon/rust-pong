@@ -34,7 +34,7 @@ impl MainMenu {
             topic: Text {
                 x: 0.5,
                 y: 0.20,
-                text: "PONG".encode_utf16().collect(),
+                text: "Pong".encode_utf16().collect(),
                 size: TextSize::Big,
             },
             topic_underline: Rectangle {
@@ -46,13 +46,13 @@ impl MainMenu {
             start: Text {
                 x: 0.5,
                 y: 0.5,
-                text: "START".encode_utf16().collect(),
+                text: "Start".encode_utf16().collect(),
                 size: TextSize::Medium,
             },
             quit: Text {
                 x: 0.5,
                 y: 0.7,
-                text: "QUIT".encode_utf16().collect(),
+                text: "Quit".encode_utf16().collect(),
                 size: TextSize::Medium,
             },
             highlighter: Rectangle {
