@@ -13,7 +13,7 @@ use crate::{
 pub struct MainMenu {
     header: Rectangle,
     topic: Text,
-    topic_underline: Rectangle,
+    help: Text,
     start: Text,
     quit: Text,
     highlighter: Rectangle,
@@ -37,15 +37,17 @@ impl MainMenu {
                 text: "Pong".encode_utf16().collect(),
                 size: TextSize::Big,
             },
-            topic_underline: Rectangle {
-                x: 0.25,
-                y: 0.325,
-                w: 0.5,
-                h: 0.03,
+            help: Text {
+                x: 0.5,
+                y: 0.4,
+                text: "Select a menu item with UP or DOWN arrows and press ENTER."
+                    .encode_utf16()
+                    .collect(),
+                size: TextSize::Tiny,
             },
             start: Text {
                 x: 0.5,
-                y: 0.5,
+                y: 0.525,
                 text: "Start".encode_utf16().collect(),
                 size: TextSize::Medium,
             },
@@ -57,7 +59,7 @@ impl MainMenu {
             },
             highlighter: Rectangle {
                 x: 0.3,
-                y: 0.485,
+                y: 0.51,
                 w: 0.03,
                 h: 0.03,
             },
@@ -76,7 +78,7 @@ impl MainMenu {
         if self.highlighter.y < self.start.y {
             self.highlighter.y = 0.685;
         } else {
-            self.highlighter.y = 0.485;
+            self.highlighter.y = 0.51;
         }
     }
 }
@@ -96,7 +98,7 @@ impl Scene for MainMenu {
     fn draw(&self, ctx: &Graphics) {
         ctx.draw_rectangle(&self.header);
         ctx.draw_text(&self.topic);
-        ctx.draw_rectangle(&self.topic_underline);
+        ctx.draw_text(&self.help);
         ctx.draw_text(&self.start);
         ctx.draw_text(&self.quit);
         ctx.draw_rectangle(&self.highlighter);

@@ -23,6 +23,7 @@ pub struct Graphics {
     big_text_format: IDWriteTextFormat,
     medium_text_format: IDWriteTextFormat,
     small_text_format: IDWriteTextFormat,
+    tiny_text_format: IDWriteTextFormat,
 }
 
 impl Graphics {
@@ -36,6 +37,7 @@ impl Graphics {
             big_text_format: create_text_format(0.2),
             medium_text_format: create_text_format(0.1),
             small_text_format: create_text_format(0.05),
+            tiny_text_format: create_text_format(0.025),
         })
     }
 
@@ -88,6 +90,7 @@ impl Graphics {
         let ctx = self.target.as_ref().unwrap();
         let brush = self.brush.as_ref().unwrap();
         let format = match text.size {
+            TextSize::Tiny => &self.tiny_text_format,
             TextSize::Small => &self.small_text_format,
             TextSize::Medium => &self.medium_text_format,
             TextSize::Big => &self.big_text_format,
