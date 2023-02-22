@@ -139,11 +139,11 @@ impl Court {
 }
 
 impl Scene for Court {
-    fn tick(mut self: Box<Self>, dt: Duration) -> Box<dyn Scene> {
+    fn tick(mut self: Box<Self>, dt: Duration) -> Option<Box<dyn Scene>> {
         // Skip physics if countdown is still in progress.
         self.countdown -= Duration::min(self.countdown, dt);
         if !self.countdown.is_zero() {
-            return self;
+            return Some(self);
         }
         self.apply_movement(dt);
 
@@ -188,24 +188,24 @@ impl Scene for Court {
             self.clear_state();
             self.right_player.points += 1;
             if self.right_player.points >= 10 {
-                return Box::new(EndGame::new(
+                return Some(Box::new(EndGame::new(
                     self.left_player.points,
                     self.right_player.points,
-                ));
+                )));
             }
             self.right_score.set_text(self.right_player.points);
         } else if (self.ball.x + self.ball.w) >= 1.0 {
             self.clear_state();
             self.left_player.points += 1;
             if self.left_player.points >= 10 {
-                return Box::new(EndGame::new(
+                return Some(Box::new(EndGame::new(
                     self.left_player.points,
                     self.right_player.points,
-                ));
+                )));
             }
             self.left_score.set_text(self.left_player.points);
         }
-        self
+        Some(self)
     }
 
     fn draw(&self, ctx: &Graphics) {
@@ -219,7 +219,7 @@ impl Scene for Court {
         ctx.draw_text(&self.right_score);
     }
 
-    fn on_key_down(mut self: Box<Self>, key: u16) -> Box<dyn Scene> {
+    fn on_key_down(mut self: Box<Self>, key: u16) -> Option<Box<dyn Scene>> {
         match VIRTUAL_KEY(key) {
             VK_UP => self.right_player.movement = -1.0,
             VK_DOWN => self.right_player.movement = 1.0,
@@ -227,10 +227,10 @@ impl Scene for Court {
             VK_S => self.left_player.movement = 1.0,
             _ => (),
         }
-        self
+        Some(self)
     }
 
-    fn on_key_up(mut self: Box<Self>, key: u16) -> Box<dyn Scene> {
+    fn on_key_up(mut self: Box<Self>, key: u16) -> Option<Box<dyn Scene>> {
         match VIRTUAL_KEY(key) {
             VK_UP => self.right_player.movement = f32::max(self.right_player.movement, 0.0),
             VK_DOWN => self.right_player.movement = f32::min(self.right_player.movement, 0.0),
@@ -238,6 +238,6 @@ impl Scene for Court {
             VK_S => self.left_player.movement = f32::min(self.left_player.movement, 0.0),
             _ => (),
         }
-        self
+        Some(self)
     }
 }

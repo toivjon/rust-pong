@@ -45,8 +45,8 @@ impl EndGame {
 }
 
 impl Scene for EndGame {
-    fn tick(self: Box<Self>, _dt: Duration) -> Box<dyn Scene> {
-        self
+    fn tick(self: Box<Self>, _dt: Duration) -> Option<Box<dyn Scene>> {
+        Some(self)
     }
 
     fn draw(&self, ctx: &Graphics) {
@@ -55,14 +55,14 @@ impl Scene for EndGame {
         ctx.draw_text(&self.help);
     }
 
-    fn on_key_down(self: Box<Self>, _key: u16) -> Box<dyn Scene> {
-        self
+    fn on_key_down(self: Box<Self>, _key: u16) -> Option<Box<dyn Scene>> {
+        Some(self)
     }
 
-    fn on_key_up(self: Box<Self>, key: u16) -> Box<dyn Scene> {
+    fn on_key_up(self: Box<Self>, key: u16) -> Option<Box<dyn Scene>> {
         if VIRTUAL_KEY(key) == VK_RETURN {
-            return Box::new(MainMenu::new());
+            return Some(Box::new(MainMenu::new()));
         }
-        self
+        Some(self)
     }
 }

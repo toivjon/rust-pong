@@ -18,7 +18,6 @@ pub struct MainMenu {
     quit: Text,
     highlighter: Rectangle,
     footer: Rectangle,
-    running: bool,
 }
 
 impl MainMenu {
@@ -68,7 +67,6 @@ impl MainMenu {
                 w: 1.0,
                 h: 0.03,
             },
-            running: true,
         }
     }
 
@@ -83,8 +81,8 @@ impl MainMenu {
 }
 
 impl Scene for MainMenu {
-    fn tick(self: Box<Self>, _dt: Duration) -> Box<dyn Scene> {
-        self
+    fn tick(self: Box<Self>, _dt: Duration) -> Option<Box<dyn Scene>> {
+        Some(self)
     }
 
     fn draw(&self, ctx: &Graphics) {
@@ -97,26 +95,22 @@ impl Scene for MainMenu {
         ctx.draw_rectangle(&self.footer);
     }
 
-    fn on_key_down(self: Box<Self>, _key: u16) -> Box<dyn Scene> {
-        self
+    fn on_key_down(self: Box<Self>, _key: u16) -> Option<Box<dyn Scene>> {
+        Some(self)
     }
 
-    fn on_key_up(mut self: Box<Self>, key: u16) -> Box<dyn Scene> {
+    fn on_key_up(mut self: Box<Self>, key: u16) -> Option<Box<dyn Scene>> {
         match VIRTUAL_KEY(key) {
             VK_UP | VK_DOWN => self.toggle_selection(),
             VK_RETURN => {
                 if self.highlighter.y < self.start.y {
-                    return Box::new(Court::new());
+                    return Some(Box::new(Court::new()));
                 } else {
-                    self.running = false;
+                    return None;
                 }
             }
             _ => (),
         }
-        self
-    }
-
-    fn running(&self) -> bool {
-        self.running
+        Some(self)
     }
 }
