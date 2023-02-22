@@ -219,7 +219,7 @@ impl Scene for Court {
         ctx.draw_text(&self.right_score);
     }
 
-    fn on_key_down(&mut self, key: u16) {
+    fn on_key_down(mut self: Box<Self>, key: u16) -> Box<dyn Scene> {
         match VIRTUAL_KEY(key) {
             VK_UP => self.right_player.movement = -1.0,
             VK_DOWN => self.right_player.movement = 1.0,
@@ -227,9 +227,10 @@ impl Scene for Court {
             VK_S => self.left_player.movement = 1.0,
             _ => (),
         }
+        self
     }
 
-    fn on_key_up(&mut self, key: u16) {
+    fn on_key_up(mut self: Box<Self>, key: u16) -> Box<dyn Scene> {
         match VIRTUAL_KEY(key) {
             VK_UP => self.right_player.movement = f32::max(self.right_player.movement, 0.0),
             VK_DOWN => self.right_player.movement = f32::min(self.right_player.movement, 0.0),
@@ -237,5 +238,6 @@ impl Scene for Court {
             VK_S => self.left_player.movement = f32::min(self.left_player.movement, 0.0),
             _ => (),
         }
+        self
     }
 }

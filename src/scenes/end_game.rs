@@ -13,7 +13,6 @@ pub struct EndGame {
     topic: Text,
     result: Text,
     help: Text,
-    selected: bool,
 }
 
 impl EndGame {
@@ -41,16 +40,12 @@ impl EndGame {
                     .collect(),
                 size: TextSize::Small,
             },
-            selected: false,
         }
     }
 }
 
 impl Scene for EndGame {
     fn tick(self: Box<Self>, _dt: Duration) -> Box<dyn Scene> {
-        if self.selected {
-            return Box::new(MainMenu::new());
-        }
         self
     }
 
@@ -60,13 +55,14 @@ impl Scene for EndGame {
         ctx.draw_text(&self.help);
     }
 
-    fn on_key_down(&mut self, _key: u16) {
-        // ...nothing
+    fn on_key_down(self: Box<Self>, _key: u16) -> Box<dyn Scene> {
+        self
     }
 
-    fn on_key_up(&mut self, key: u16) {
+    fn on_key_up(self: Box<Self>, key: u16) -> Box<dyn Scene> {
         if VIRTUAL_KEY(key) == VK_RETURN {
-            self.selected = true;
+            return Box::new(MainMenu::new());
         }
+        self
     }
 }
