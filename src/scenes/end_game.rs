@@ -47,11 +47,11 @@ impl EndGame {
 }
 
 impl Scene for EndGame {
-    fn tick(&mut self, _dt: Duration) -> (Option<Box<dyn Scene>>, bool) {
+    fn tick(self: Box<Self>, _dt: Duration) -> Box<dyn Scene> {
         if self.selected {
-            return (Some(Box::new(MainMenu::new())), false);
+            return Box::new(MainMenu::new());
         }
-        (None, false)
+        self
     }
 
     fn draw(&self, ctx: &Graphics) {

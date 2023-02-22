@@ -18,7 +18,7 @@ fn main() -> Result<()> {
     let mut app = App::new(gfx);
     let mut msg = MSG::default();
     unsafe { SetWindowLongPtrA(window, GWLP_USERDATA, &mut app as *mut _ as _) };
-    while app.running {
+    while app.scene.running() {
         unsafe {
             // Check and acquire system messages from the message queue.
             while PeekMessageA(&mut msg, HWND(0), 0, 0, PM_REMOVE).into() {
@@ -29,7 +29,7 @@ fn main() -> Result<()> {
                 DispatchMessageA(&msg);
             }
         }
-        app.tick();
+        app.scene = app.scene.tick(app.timer.time());
         app.graphics.draw(app.scene.as_ref())?;
     }
     Ok(())
