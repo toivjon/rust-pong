@@ -84,11 +84,11 @@ unsafe extern "system" fn wndproc(hwnd: HWND, msg: u32, wparam: WPARAM, lparam: 
                 return LRESULT(0);
             }
             WM_KEYDOWN => {
-                (*app).on_key_down(wparam.0 as u16);
+                (*app).key_down(wparam.0 as u16);
                 return LRESULT(0);
             }
             WM_KEYUP => {
-                (*app).on_key_up(wparam.0 as u16);
+                (*app).key_up(wparam.0 as u16);
                 return LRESULT(0);
             }
             _ => (),
