@@ -95,11 +95,11 @@ impl Scene for MainMenu {
         ctx.draw_rectangle(&self.footer);
     }
 
-    fn on_key_down(self: Box<Self>, _key: u16) -> Option<Box<dyn Scene>> {
+    fn key_down(self: Box<Self>, _key: u16) -> Option<Box<dyn Scene>> {
         Some(self)
     }
 
-    fn on_key_up(mut self: Box<Self>, key: u16) -> Option<Box<dyn Scene>> {
+    fn key_up(mut self: Box<Self>, key: u16) -> Option<Box<dyn Scene>> {
         match VIRTUAL_KEY(key) {
             VK_UP | VK_DOWN => self.toggle_selection(),
             VK_RETURN => {

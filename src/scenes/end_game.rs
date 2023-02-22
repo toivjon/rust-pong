@@ -55,11 +55,11 @@ impl Scene for EndGame {
         ctx.draw_text(&self.help);
     }
 
-    fn on_key_down(self: Box<Self>, _key: u16) -> Option<Box<dyn Scene>> {
+    fn key_down(self: Box<Self>, _key: u16) -> Option<Box<dyn Scene>> {
         Some(self)
     }
 
-    fn on_key_up(self: Box<Self>, key: u16) -> Option<Box<dyn Scene>> {
+    fn key_up(self: Box<Self>, key: u16) -> Option<Box<dyn Scene>> {
         if VIRTUAL_KEY(key) == VK_RETURN {
             return Some(Box::new(MainMenu::new()));
         }

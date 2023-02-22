@@ -37,13 +37,13 @@ impl App {
 
     pub fn on_key_down(&mut self, key: u16) {
         if let Some(s) = self.scene.take() {
-            self.scene = s.on_key_down(key);
+            self.scene = s.key_down(key);
         }
     }
 
     pub fn on_key_up(&mut self, key: u16) {
         if let Some(s) = self.scene.take() {
-            self.scene = s.on_key_up(key);
+            self.scene = s.key_up(key);
         }
     }
 
