@@ -51,6 +51,7 @@ impl Graphics {
     fn begin_draw(&mut self) -> Result<()> {
         if self.target.is_none() {
             self.create_target()?;
+            self.rebuild_text_formats();
         }
         let ctx = self.target.as_ref().unwrap();
         unsafe {
@@ -96,8 +97,13 @@ impl Graphics {
             TextSize::Big => &self.big_text_format,
         };
         unsafe {
-            let transform = Matrix3x2::translation(text.x, text.y);
-            ctx.SetTransform(&(transform * self.transform));
+            let size = get_window_size(ctx.GetHwnd());
+            let offset = get_aspect_offset(&size);
+            let transform = Matrix3x2::translation(
+                offset.X + text.x * (size.width as f32 - offset.X * 2.0),
+                offset.Y + text.y * (size.height as f32 - offset.Y * 2.0),
+            );
+            ctx.SetTransform(&transform);
             ctx.DrawText(
                 &text.text,
                 format,
@@ -116,6 +122,7 @@ impl Graphics {
             let ctx = self.target.as_ref().unwrap();
             let size = get_window_size(unsafe { ctx.GetHwnd() });
             unsafe { ctx.Resize(&size)? }
+            self.rebuild_text_formats();
         }
         Ok(())
     }
@@ -152,6 +159,19 @@ impl Graphics {
     fn release_target(&mut self) {
         self.target = None;
         self.brush = None;
+    }
+
+    /// Rebuild the text formats based on the current window size.
+    fn rebuild_text_formats(&mut self) {
+        let ctx = self.target.as_ref().unwrap();
+        let size = get_window_size(unsafe { ctx.GetHwnd() });
+        let offset = get_aspect_offset(&size);
+        let scalar = size.height as f32 - offset.Y * 2.0;
+
+        self.tiny_text_format = create_text_format(0.025 * scalar);
+        self.small_text_format = create_text_format(0.05 * scalar);
+        self.medium_text_format = create_text_format(0.1 * scalar);
+        self.big_text_format = create_text_format(0.2 * scalar);
     }
 }
 
