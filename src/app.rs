@@ -19,16 +19,19 @@ impl App {
         }
     }
 
+    /// Resize the application graphics rendering canvas.
     pub fn resize(&mut self) {
         self.graphics.resize();
     }
 
+    /// Update the current state of the application logic.
     pub fn tick(&mut self) {
         if let Some(s) = self.scene.take() {
             self.scene = s.tick(self.timer.time());
         }
     }
 
+    /// Render the current state of the application on the screen.
     pub fn draw(&mut self) {
         if let Some(s) = self.scene.as_ref() {
             self.graphics.draw(s.as_ref()).unwrap();
