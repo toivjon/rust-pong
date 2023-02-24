@@ -4,6 +4,7 @@ use crate::{
     timer::Timer,
 };
 
+/// An application context including the necessary logical and graphical components.
 pub struct App {
     graphics: Graphics,
     scene: Option<Box<dyn Scene>>,
@@ -11,6 +12,7 @@ pub struct App {
 }
 
 impl App {
+    /// Build a new application context and with the given graphical context.
     pub fn new(gfx: Graphics) -> Self {
         App {
             graphics: gfx,
