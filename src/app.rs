@@ -34,7 +34,7 @@ impl App {
     /// Render the current state of the application on the screen.
     pub fn draw(&mut self) {
         if let Some(s) = self.scene.as_ref() {
-            self.graphics.draw(s.as_ref()).unwrap();
+            self.graphics.draw(s.as_ref());
         }
     }
 

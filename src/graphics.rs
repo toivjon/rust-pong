@@ -41,9 +41,9 @@ impl Graphics {
         })
     }
 
-    pub fn draw(&mut self, scene: &dyn Scene) -> Result<()> {
+    pub fn draw(&mut self, scene: &dyn Scene) {
         if self.target.is_none() {
-            self.create_target()?;
+            self.create_target().unwrap();
             self.rebuild_text_formats();
         }
         if let Some(ctx) = self.target.as_ref() {
@@ -56,7 +56,6 @@ impl Graphics {
                 }
             }
         }
-        Ok(())
     }
 
     pub fn draw_rectangle(&self, rectangle: &Rectangle) {
