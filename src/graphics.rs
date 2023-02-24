@@ -42,13 +42,6 @@ impl Graphics {
     }
 
     pub fn draw(&mut self, scene: &dyn Scene) -> Result<()> {
-        self.begin_draw()?;
-        scene.draw(self);
-        self.end_draw();
-        Ok(())
-    }
-
-    fn begin_draw(&mut self) -> Result<()> {
         if self.target.is_none() {
             self.create_target()?;
             self.rebuild_text_formats();
@@ -56,18 +49,14 @@ impl Graphics {
         if let Some(ctx) = self.target.as_ref() {
             unsafe { ctx.BeginDraw() };
             unsafe { ctx.Clear(Some(&D2D1_COLOR_F::default())) };
-        }
-        Ok(())
-    }
-
-    fn end_draw(&mut self) {
-        if let Some(ctx) = self.target.as_ref() {
+            scene.draw(self);
             if let Err(error) = unsafe { ctx.EndDraw(None, None) } {
                 if error.code() == D2DERR_RECREATE_TARGET {
                     self.release_target();
                 }
             }
         }
+        Ok(())
     }
 
     pub fn draw_rectangle(&self, rectangle: &Rectangle) {
