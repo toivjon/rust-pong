@@ -86,30 +86,32 @@ impl Graphics {
     }
 
     pub fn draw_text(&self, text: &Text) {
-        let ctx = self.target.as_ref().unwrap();
-        let brush = self.brush.as_ref().unwrap();
         let format = match text.size {
             TextSize::Tiny => &self.tiny_text_format,
             TextSize::Small => &self.small_text_format,
             TextSize::Medium => &self.medium_text_format,
             TextSize::Big => &self.big_text_format,
         };
-        unsafe {
-            let size = get_window_size(ctx.GetHwnd());
+        if let Some(ctx) = self.target.as_ref() {
+            let size = get_window_size(unsafe { ctx.GetHwnd() });
             let offset = get_aspect_offset(&size);
             let transform = Matrix3x2::translation(
                 offset.X + text.x * (size.width as f32 - offset.X * 2.0),
                 offset.Y + text.y * (size.height as f32 - offset.Y * 2.0),
             );
-            ctx.SetTransform(&transform);
-            ctx.DrawText(
-                &text.text,
-                format,
-                &D2D_RECT_F::default(),
-                brush,
-                D2D1_DRAW_TEXT_OPTIONS_NONE,
-                DWRITE_MEASURING_MODE_NATURAL,
-            )
+            unsafe { ctx.SetTransform(&transform) };
+            if let Some(brush) = self.brush.as_ref() {
+                unsafe {
+                    ctx.DrawText(
+                        &text.text,
+                        format,
+                        &D2D_RECT_F::default(),
+                        brush,
+                        D2D1_DRAW_TEXT_OPTIONS_NONE,
+                        DWRITE_MEASURING_MODE_NATURAL,
+                    )
+                }
+            }
         }
     }
 
@@ -117,9 +119,11 @@ impl Graphics {
     pub fn resize(&mut self) -> Result<()> {
         if self.target.is_some() {
             self.transform = create_aspect_transform(self.hwnd);
-            let ctx = self.target.as_ref().unwrap();
-            let size = get_window_size(unsafe { ctx.GetHwnd() });
-            unsafe { ctx.Resize(&size)? }
+            if let Some(ctx) = self.target.as_ref() {
+                let hwnd = unsafe { ctx.GetHwnd() };
+                let size = get_window_size(hwnd);
+                unsafe { ctx.Resize(&size)? }
+            }
             self.rebuild_text_formats();
         }
         Ok(())
@@ -161,15 +165,16 @@ impl Graphics {
 
     /// Rebuild the text formats based on the current window size.
     fn rebuild_text_formats(&mut self) {
-        let ctx = self.target.as_ref().unwrap();
-        let size = get_window_size(unsafe { ctx.GetHwnd() });
-        let offset = get_aspect_offset(&size);
-        let scalar = size.height as f32 - offset.Y * 2.0;
+        if let Some(ctx) = self.target.as_ref() {
+            let size = get_window_size(unsafe { ctx.GetHwnd() });
+            let offset = get_aspect_offset(&size);
+            let scalar = size.height as f32 - offset.Y * 2.0;
 
-        self.tiny_text_format = create_text_format(0.025 * scalar);
-        self.small_text_format = create_text_format(0.05 * scalar);
-        self.medium_text_format = create_text_format(0.1 * scalar);
-        self.big_text_format = create_text_format(0.2 * scalar);
+            self.tiny_text_format = create_text_format(0.025 * scalar);
+            self.small_text_format = create_text_format(0.05 * scalar);
+            self.medium_text_format = create_text_format(0.1 * scalar);
+            self.big_text_format = create_text_format(0.2 * scalar);
+        }
     }
 }
 
