@@ -35,12 +35,14 @@ impl App {
         Ok(())
     }
 
+    /// Tell the application that a keyboard key is being pressed.
     pub fn key_down(&mut self, key: u16) {
         if let Some(s) = self.scene.take() {
             self.scene = s.key_down(key);
         }
     }
 
+    /// Tell the application that a keyboard key is being released.
     pub fn key_up(&mut self, key: u16) {
         if let Some(s) = self.scene.take() {
             self.scene = s.key_up(key);
