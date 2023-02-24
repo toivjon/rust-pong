@@ -53,37 +53,35 @@ impl Graphics {
             self.create_target()?;
             self.rebuild_text_formats();
         }
-        let ctx = self.target.as_ref().unwrap();
-        unsafe {
-            ctx.BeginDraw();
-            ctx.Clear(Some(&D2D1_COLOR_F::default()));
+        if let Some(ctx) = self.target.as_ref() {
+            unsafe { ctx.BeginDraw() };
+            unsafe { ctx.Clear(Some(&D2D1_COLOR_F::default())) };
         }
         Ok(())
     }
 
     fn end_draw(&mut self) {
-        let ctx = self.target.as_ref().unwrap();
-        if let Err(error) = unsafe { ctx.EndDraw(None, None) } {
-            if error.code() == D2DERR_RECREATE_TARGET {
-                self.release_target();
+        if let Some(ctx) = self.target.as_ref() {
+            if let Err(error) = unsafe { ctx.EndDraw(None, None) } {
+                if error.code() == D2DERR_RECREATE_TARGET {
+                    self.release_target();
+                }
             }
         }
     }
 
     pub fn draw_rectangle(&self, rectangle: &Rectangle) {
-        let ctx = self.target.as_ref().unwrap();
-        let brush = self.brush.as_ref().unwrap();
-        unsafe {
-            let transform = Matrix3x2::translation(rectangle.x, rectangle.y);
-            ctx.SetTransform(&(transform * self.transform));
-            ctx.FillRectangle(
-                &D2D_RECT_F {
-                    right: rectangle.w,
-                    bottom: rectangle.h,
-                    ..Default::default()
-                },
-                brush,
-            );
+        let transform = Matrix3x2::translation(rectangle.x, rectangle.y);
+        let rect = D2D_RECT_F {
+            right: rectangle.w,
+            bottom: rectangle.h,
+            ..Default::default()
+        };
+        if let Some(ctx) = self.target.as_ref() {
+            unsafe { ctx.SetTransform(&(transform * self.transform)) };
+            if let Some(brush) = self.brush.as_ref() {
+                unsafe { ctx.FillRectangle(&rect, brush) }
+            }
         }
     }
 
