@@ -3,7 +3,6 @@ use crate::{
     scenes::{MainMenu, Scene},
     timer::Timer,
 };
-use windows::core::Result;
 
 pub struct App {
     graphics: Graphics,
@@ -24,15 +23,16 @@ impl App {
         self.graphics.resize();
     }
 
-    pub fn tick(&mut self) -> Result<()> {
+    pub fn tick(&mut self) {
         if let Some(s) = self.scene.take() {
-            let next_scene = s.tick(self.timer.time());
-            if let Some(s) = next_scene.as_ref() {
-                self.graphics.draw(s.as_ref())?;
-            }
-            self.scene = next_scene;
+            self.scene = s.tick(self.timer.time());
         }
-        Ok(())
+    }
+
+    pub fn draw(&mut self) {
+        if let Some(s) = self.scene.as_ref() {
+            self.graphics.draw(s.as_ref()).unwrap();
+        }
     }
 
     /// Tell the application that a keyboard key is being pressed.

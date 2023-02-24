@@ -29,7 +29,8 @@ fn main() -> Result<()> {
                 DispatchMessageA(&msg);
             }
         }
-        app.tick()?;
+        app.tick();
+        app.draw();
     }
     Ok(())
 }
