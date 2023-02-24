@@ -47,6 +47,7 @@ impl App {
         }
     }
 
+    /// Returns a boolean indicating whether the application has an active scene i.e is running.
     pub fn running(&self) -> bool {
         self.scene.is_some()
     }
