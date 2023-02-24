@@ -21,7 +21,7 @@ impl App {
     }
 
     pub fn resize(&mut self) {
-        self.graphics.resize().unwrap();
+        self.graphics.resize();
     }
 
     pub fn tick(&mut self) -> Result<()> {

@@ -105,17 +105,16 @@ impl Graphics {
     }
 
     /// Resize the graphics by changing the size of the render target.
-    pub fn resize(&mut self) -> Result<()> {
+    pub fn resize(&mut self) {
         if self.target.is_some() {
             self.transform = create_aspect_transform(self.hwnd);
             if let Some(ctx) = self.target.as_ref() {
                 let hwnd = unsafe { ctx.GetHwnd() };
                 let size = get_window_size(hwnd);
-                unsafe { ctx.Resize(&size)? }
+                unsafe { ctx.Resize(&size).unwrap() }
             }
             self.rebuild_text_formats();
         }
-        Ok(())
     }
 
     /// Create rendering target and related items. This function should be used
