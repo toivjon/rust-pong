@@ -27,6 +27,7 @@ const COUNTDOWN: Duration = Duration::from_millis(500);
 /// The amount of additional push added to collision handling.
 const NUDGE: f32 = 0.001;
 
+/// The scene where players compete between each other.
 pub struct Court {
     ball: Rectangle,
     l_paddle: Rectangle,

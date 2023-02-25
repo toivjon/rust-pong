@@ -9,6 +9,7 @@ use crate::{
     scenes::Scene,
 };
 
+/// The scene which shows the end game results.
 pub struct EndGame {
     topic: Text,
     result: Text,
