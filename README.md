@@ -26,3 +26,9 @@ This Pong implementation contains the following features.
 - Ball movement is being stopped for half second after each reset.
 - Ball velocity is increased on a hit with a paddle.
 - Ball velocity does not exceed the pre-defined maximum velocity.
+
+## Screenshots
+
+![alt text](https://github.com/toivjon/rust-pong/blob/master/screenshots/mainmenu.png "MainManu")
+![alt text](https://github.com/toivjon/rust-pong/blob/master/screenshots/court.png "Court")
+![alt text](https://github.com/toivjon/rust-pong/blob/master/screenshots/endgame.png "EndGame")
