@@ -31,7 +31,7 @@ impl EndGame {
                 text: format!("{} - {}", r_score, l_score)
                     .encode_utf16()
                     .collect(),
-                size: TextSize::Medium,
+                size: TextSize::Big,
             },
             help: Text {
                 x: 0.5,
