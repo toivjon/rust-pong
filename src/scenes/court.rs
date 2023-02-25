@@ -198,7 +198,6 @@ impl Scene for Court {
 
     fn draw(&self, ctx: &Graphics) {
         ctx.draw_rectangle(&self.ball);
-        ctx.draw_rectangle(&self.ball);
         ctx.draw_rectangle(&self.l_paddle);
         ctx.draw_rectangle(&self.r_paddle);
         ctx.draw_rectangle(&self.top_wall);
