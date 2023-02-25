@@ -29,8 +29,8 @@ const NUDGE: f32 = 0.001;
 
 pub struct Court {
     ball: Rectangle,
-    left_paddle: Rectangle,
-    right_paddle: Rectangle,
+    l_paddle: Rectangle,
+    r_paddle: Rectangle,
     top_wall: Rectangle,
     bottom_wall: Rectangle,
     left_score: Text,
@@ -57,13 +57,13 @@ impl Court {
                 w: 0.025,
                 h: 0.0325,
             },
-            left_paddle: Rectangle {
+            l_paddle: Rectangle {
                 x: 0.05,
                 y: 0.5 - 0.075,
                 w: 0.025,
                 h: 0.15,
             },
-            right_paddle: Rectangle {
+            r_paddle: Rectangle {
                 x: 1.0 - 0.025 - 0.05,
                 y: 0.5 - (0.15 / 2.0),
                 w: 0.025,
@@ -106,8 +106,8 @@ impl Court {
     /// Apply the movement for all dynamic entities based on the provided delta time.
     fn apply_movement(&mut self, dt: Duration) {
         let millis = dt.as_millis() as f32;
-        self.right_paddle.y += self.r_movement * PADDLE_VELOCITY * millis;
-        self.left_paddle.y += self.l_movement * PADDLE_VELOCITY * millis;
+        self.r_paddle.y += self.r_movement * PADDLE_VELOCITY * millis;
+        self.l_paddle.y += self.l_movement * PADDLE_VELOCITY * millis;
         self.ball.y += self.ball_y_movement * millis;
         self.ball.x += self.ball_x_movement * millis;
     }
@@ -116,8 +116,8 @@ impl Court {
     fn clear_state(&mut self) {
         self.ball.x = 0.5 - (self.ball.w / 2.0);
         self.ball.y = 0.5 - (self.ball.h / 2.0);
-        self.left_paddle.y = 0.5 - (self.left_paddle.h / 2.0);
-        self.right_paddle.y = 0.5 - (self.right_paddle.h / 2.0);
+        self.l_paddle.y = 0.5 - (self.l_paddle.h / 2.0);
+        self.r_paddle.y = 0.5 - (self.r_paddle.h / 2.0);
         self.countdown = COUNTDOWN;
         self.ball_x_movement *= 1.0 / self.ball_x_movement * BALL_VELOCITY;
         self.ball_y_movement *= 1.0 / self.ball_y_movement * BALL_VELOCITY;
@@ -142,17 +142,17 @@ impl Scene for Court {
         self.apply_movement(dt);
 
         // don't let right paddle to go out of wall limits
-        if self.right_paddle.collides(&self.top_wall) {
-            self.right_paddle.y = self.top_wall.y + self.top_wall.h + NUDGE;
-        } else if self.right_paddle.collides(&self.bottom_wall) {
-            self.right_paddle.y = self.bottom_wall.y - self.right_paddle.h - NUDGE;
+        if self.r_paddle.collides(&self.top_wall) {
+            self.r_paddle.y = self.top_wall.y + self.top_wall.h + NUDGE;
+        } else if self.r_paddle.collides(&self.bottom_wall) {
+            self.r_paddle.y = self.bottom_wall.y - self.r_paddle.h - NUDGE;
         }
 
         // don't let left paddle to go out of wall limits
-        if self.left_paddle.collides(&self.top_wall) {
-            self.left_paddle.y = self.top_wall.y + self.top_wall.h + NUDGE;
-        } else if self.left_paddle.collides(&self.bottom_wall) {
-            self.left_paddle.y = self.bottom_wall.y - self.left_paddle.h - NUDGE;
+        if self.l_paddle.collides(&self.top_wall) {
+            self.l_paddle.y = self.top_wall.y + self.top_wall.h + NUDGE;
+        } else if self.l_paddle.collides(&self.bottom_wall) {
+            self.l_paddle.y = self.bottom_wall.y - self.l_paddle.h - NUDGE;
         }
 
         // reflect ball Y-movement if it hits the walls.
@@ -167,12 +167,12 @@ impl Scene for Court {
         }
 
         // reflect ball X-movement if it hits the paddles.
-        if self.left_paddle.collides(&self.ball) {
-            self.ball.x = self.left_paddle.x + self.left_paddle.w + NUDGE;
+        if self.l_paddle.collides(&self.ball) {
+            self.ball.x = self.l_paddle.x + self.l_paddle.w + NUDGE;
             self.ball_x_movement = -self.ball_x_movement;
             self.accelerate_ball();
-        } else if self.right_paddle.collides(&self.ball) {
-            self.ball.x = self.right_paddle.x - self.ball.w - NUDGE;
+        } else if self.r_paddle.collides(&self.ball) {
+            self.ball.x = self.r_paddle.x - self.ball.w - NUDGE;
             self.ball_x_movement = -self.ball_x_movement;
             self.accelerate_ball();
         }
@@ -199,8 +199,8 @@ impl Scene for Court {
     fn draw(&self, ctx: &Graphics) {
         ctx.draw_rectangle(&self.ball);
         ctx.draw_rectangle(&self.ball);
-        ctx.draw_rectangle(&self.left_paddle);
-        ctx.draw_rectangle(&self.right_paddle);
+        ctx.draw_rectangle(&self.l_paddle);
+        ctx.draw_rectangle(&self.r_paddle);
         ctx.draw_rectangle(&self.top_wall);
         ctx.draw_rectangle(&self.bottom_wall);
         ctx.draw_text(&self.left_score);
