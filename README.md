@@ -29,6 +29,6 @@ This Pong implementation contains the following features.
 
 ## Screenshots
 
-![alt text](https://github.com/toivjon/rust-pong/blob/master/screenshots/mainmenu.png "MainManu")
-![alt text](https://github.com/toivjon/rust-pong/blob/master/screenshots/court.png "Court")
-![alt text](https://github.com/toivjon/rust-pong/blob/master/screenshots/endgame.png "EndGame")
+![alt text](https://github.com/toivjon/rust-pong/blob/main/screenshots/mainmenu.png "MainManu")
+![alt text](https://github.com/toivjon/rust-pong/blob/main/screenshots/court.png "Court")
+![alt text](https://github.com/toivjon/rust-pong/blob/main/screenshots/endgame.png "EndGame")
