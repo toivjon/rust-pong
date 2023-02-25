@@ -31,10 +31,10 @@ pub struct Court {
     ball: Rectangle,
     l_paddle: Rectangle,
     r_paddle: Rectangle,
-    top_wall: Rectangle,
-    bottom_wall: Rectangle,
-    left_score: Text,
-    right_score: Text,
+    t_wall: Rectangle,
+    b_wall: Rectangle,
+    l_score: Text,
+    r_score: Text,
 
     ball_x_movement: f32,
     ball_y_movement: f32,
@@ -69,25 +69,25 @@ impl Court {
                 w: 0.025,
                 h: 0.15,
             },
-            top_wall: Rectangle {
+            t_wall: Rectangle {
                 x: 0.0,
                 y: 0.0,
                 w: 1.0,
                 h: 0.03,
             },
-            bottom_wall: Rectangle {
+            b_wall: Rectangle {
                 x: 0.0,
                 y: 1.0 - 0.03,
                 w: 1.0,
                 h: 0.03,
             },
-            left_score: Text {
+            l_score: Text {
                 x: 0.35,
                 y: 0.15,
                 text: "0".encode_utf16().collect(),
                 size: TextSize::Big,
             },
-            right_score: Text {
+            r_score: Text {
                 x: 0.65,
                 y: 0.15,
                 text: "0".encode_utf16().collect(),
@@ -142,26 +142,26 @@ impl Scene for Court {
         self.apply_movement(dt);
 
         // don't let right paddle to go out of wall limits
-        if self.r_paddle.collides(&self.top_wall) {
-            self.r_paddle.y = self.top_wall.y + self.top_wall.h + NUDGE;
-        } else if self.r_paddle.collides(&self.bottom_wall) {
-            self.r_paddle.y = self.bottom_wall.y - self.r_paddle.h - NUDGE;
+        if self.r_paddle.collides(&self.t_wall) {
+            self.r_paddle.y = self.t_wall.y + self.t_wall.h + NUDGE;
+        } else if self.r_paddle.collides(&self.b_wall) {
+            self.r_paddle.y = self.b_wall.y - self.r_paddle.h - NUDGE;
         }
 
         // don't let left paddle to go out of wall limits
-        if self.l_paddle.collides(&self.top_wall) {
-            self.l_paddle.y = self.top_wall.y + self.top_wall.h + NUDGE;
-        } else if self.l_paddle.collides(&self.bottom_wall) {
-            self.l_paddle.y = self.bottom_wall.y - self.l_paddle.h - NUDGE;
+        if self.l_paddle.collides(&self.t_wall) {
+            self.l_paddle.y = self.t_wall.y + self.t_wall.h + NUDGE;
+        } else if self.l_paddle.collides(&self.b_wall) {
+            self.l_paddle.y = self.b_wall.y - self.l_paddle.h - NUDGE;
         }
 
         // reflect ball Y-movement if it hits the walls.
-        if self.bottom_wall.collides(&self.ball) {
-            self.ball.y = self.bottom_wall.y - self.ball.h - NUDGE;
+        if self.b_wall.collides(&self.ball) {
+            self.ball.y = self.b_wall.y - self.ball.h - NUDGE;
             self.ball_y_movement = -self.ball_y_movement;
             self.accelerate_ball();
-        } else if self.top_wall.collides(&self.ball) {
-            self.ball.y = self.top_wall.y + self.top_wall.h + NUDGE;
+        } else if self.t_wall.collides(&self.ball) {
+            self.ball.y = self.t_wall.y + self.t_wall.h + NUDGE;
             self.ball_y_movement = -self.ball_y_movement;
             self.accelerate_ball();
         }
@@ -184,14 +184,14 @@ impl Scene for Court {
             if self.r_points >= 10 {
                 return Some(Box::new(EndGame::new(self.l_points, self.r_points)));
             }
-            self.right_score.set_text(self.r_points);
+            self.r_score.set_text(self.r_points);
         } else if (self.ball.x + self.ball.w) >= 1.0 {
             self.clear_state();
             self.l_points += 1;
             if self.l_points >= 10 {
                 return Some(Box::new(EndGame::new(self.l_points, self.r_points)));
             }
-            self.left_score.set_text(self.l_points);
+            self.l_score.set_text(self.l_points);
         }
         Some(self)
     }
@@ -200,10 +200,10 @@ impl Scene for Court {
         ctx.draw_rectangle(&self.ball);
         ctx.draw_rectangle(&self.l_paddle);
         ctx.draw_rectangle(&self.r_paddle);
-        ctx.draw_rectangle(&self.top_wall);
-        ctx.draw_rectangle(&self.bottom_wall);
-        ctx.draw_text(&self.left_score);
-        ctx.draw_text(&self.right_score);
+        ctx.draw_rectangle(&self.t_wall);
+        ctx.draw_rectangle(&self.b_wall);
+        ctx.draw_text(&self.l_score);
+        ctx.draw_text(&self.r_score);
     }
 
     fn key_down(mut self: Box<Self>, key: u16) -> Option<Box<dyn Scene>> {
