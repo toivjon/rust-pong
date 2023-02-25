@@ -2,6 +2,8 @@
 
 A Rust implementation of the classic Pong game.
 
+This implementation uses Windows API and runs only on Windows machines.
+
 ## Scenes
 
 Game is split into following scenes:
