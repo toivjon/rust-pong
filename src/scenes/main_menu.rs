@@ -32,7 +32,7 @@ impl MainMenu {
             topic: Text {
                 x: 0.5,
                 y: 0.20,
-                text: "Pong".encode_utf16().collect(),
+                text: "PONG".encode_utf16().collect(),
                 size: TextSize::Big,
             },
             help: Text {
@@ -46,13 +46,13 @@ impl MainMenu {
             start: Text {
                 x: 0.5,
                 y: 0.525,
-                text: "Start".encode_utf16().collect(),
+                text: "START".encode_utf16().collect(),
                 size: TextSize::Medium,
             },
             quit: Text {
                 x: 0.5,
                 y: 0.7,
-                text: "Quit".encode_utf16().collect(),
+                text: "QUIT".encode_utf16().collect(),
                 size: TextSize::Medium,
             },
             highlighter: Rectangle {
