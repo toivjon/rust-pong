@@ -39,15 +39,13 @@ pub struct Court {
     ball_x_movement: f32,
     ball_y_movement: f32,
 
-    left_player: Player,
-    right_player: Player,
+    l_movement: f32,
+    r_movement: f32,
+
+    l_points: u8,
+    r_points: u8,
 
     countdown: Duration,
-}
-
-struct Player {
-    movement: f32,
-    points: u8,
 }
 
 impl Court {
@@ -97,14 +95,10 @@ impl Court {
             },
             ball_x_movement: BALL_VELOCITY,
             ball_y_movement: -BALL_VELOCITY,
-            left_player: Player {
-                movement: 0.0,
-                points: 0,
-            },
-            right_player: Player {
-                movement: 0.0,
-                points: 0,
-            },
+            l_movement: 0.0,
+            l_points: 0,
+            r_movement: 0.0,
+            r_points: 0,
             countdown: COUNTDOWN,
         }
     }
@@ -112,8 +106,8 @@ impl Court {
     /// Apply the movement for all dynamic entities based on the provided delta time.
     fn apply_movement(&mut self, dt: Duration) {
         let millis = dt.as_millis() as f32;
-        self.right_paddle.y += self.right_player.movement * PADDLE_VELOCITY * millis;
-        self.left_paddle.y += self.left_player.movement * PADDLE_VELOCITY * millis;
+        self.right_paddle.y += self.r_movement * PADDLE_VELOCITY * millis;
+        self.left_paddle.y += self.l_movement * PADDLE_VELOCITY * millis;
         self.ball.y += self.ball_y_movement * millis;
         self.ball.x += self.ball_x_movement * millis;
     }
@@ -186,24 +180,18 @@ impl Scene for Court {
         // Check whether ball hits the goals.
         if self.ball.x <= 0.0 {
             self.clear_state();
-            self.right_player.points += 1;
-            if self.right_player.points >= 10 {
-                return Some(Box::new(EndGame::new(
-                    self.left_player.points,
-                    self.right_player.points,
-                )));
+            self.r_points += 1;
+            if self.r_points >= 10 {
+                return Some(Box::new(EndGame::new(self.l_points, self.r_points)));
             }
-            self.right_score.set_text(self.right_player.points);
+            self.right_score.set_text(self.r_points);
         } else if (self.ball.x + self.ball.w) >= 1.0 {
             self.clear_state();
-            self.left_player.points += 1;
-            if self.left_player.points >= 10 {
-                return Some(Box::new(EndGame::new(
-                    self.left_player.points,
-                    self.right_player.points,
-                )));
+            self.l_points += 1;
+            if self.l_points >= 10 {
+                return Some(Box::new(EndGame::new(self.l_points, self.r_points)));
             }
-            self.left_score.set_text(self.left_player.points);
+            self.left_score.set_text(self.l_points);
         }
         Some(self)
     }
@@ -221,10 +209,10 @@ impl Scene for Court {
 
     fn key_down(mut self: Box<Self>, key: u16) -> Option<Box<dyn Scene>> {
         match VIRTUAL_KEY(key) {
-            VK_UP => self.right_player.movement = -1.0,
-            VK_DOWN => self.right_player.movement = 1.0,
-            VK_W => self.left_player.movement = -1.0,
-            VK_S => self.left_player.movement = 1.0,
+            VK_UP => self.r_movement = -1.0,
+            VK_DOWN => self.r_movement = 1.0,
+            VK_W => self.l_movement = -1.0,
+            VK_S => self.l_movement = 1.0,
             _ => (),
         }
         Some(self)
@@ -232,10 +220,10 @@ impl Scene for Court {
 
     fn key_up(mut self: Box<Self>, key: u16) -> Option<Box<dyn Scene>> {
         match VIRTUAL_KEY(key) {
-            VK_UP => self.right_player.movement = f32::max(self.right_player.movement, 0.0),
-            VK_DOWN => self.right_player.movement = f32::min(self.right_player.movement, 0.0),
-            VK_W => self.left_player.movement = f32::max(self.left_player.movement, 0.0),
-            VK_S => self.left_player.movement = f32::min(self.left_player.movement, 0.0),
+            VK_UP => self.r_movement = f32::max(self.r_movement, 0.0),
+            VK_DOWN => self.r_movement = f32::min(self.r_movement, 0.0),
+            VK_W => self.l_movement = f32::max(self.l_movement, 0.0),
+            VK_S => self.l_movement = f32::min(self.l_movement, 0.0),
             _ => (),
         }
         Some(self)
